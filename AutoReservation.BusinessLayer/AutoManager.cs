@@ -15,8 +15,6 @@
         //    }
         //}
 
-        // Hoi David, du stinksch
-        //Selber
 
     }
 }
