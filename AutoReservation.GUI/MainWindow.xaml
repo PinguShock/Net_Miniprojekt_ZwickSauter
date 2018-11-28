@@ -4,9 +4,28 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AutoReservation.GUI"
+        xmlns:Views="clr-namespace:AutoReservation.GUI.Views"
         mc:Ignorable="d"
-        Title="Auto Reservation System" Height="450" Width="800">
+        Title="Auto Reservation System" WindowState="Maximized">
+        <!-- TODO: Minimal Window Size 
+    
+    
+    
+        -->
     <Grid>
-        
+        <TabControl>
+            <TabItem Header="Autos">
+                <Views:AutoView x:Name="AutoView"
+                                DataContext="{Binding Path=AutoViewModel, Mode=OneWay}" Loaded="avAutoView_Loaded"/>
+            </TabItem>
+            <TabItem Header="Kunden">
+                <Views:KundeView x:Name="KundenView"
+                                 DataContext="{Binding Path=KundeViewModel, Mode=OneWay}"/>
+            </TabItem>
+            <TabItem Header="Reservationen">
+                <Views:ReservationView x:Name="Reservationen"
+                                       DataContext="{Binding Path=ReservationViewModel, Mode=OneWay}"/>
+            </TabItem>
+        </TabControl>
     </Grid>
 </Window>
