@@ -17,25 +17,39 @@ namespace AutoReservation.BusinessLayer
                     return context.Reservationen.ToList();
                 }
             }
-            
         }
         public Reservation GetById(int id)
         {
-            foreach (Reservation reservation in List)
+            using (AutoReservationContext context = new AutoReservationContext())
             {
-                if (reservation.ReservationsNr == id)
-                {
-                    return reservation;
-                }
+                return context.Reservationen.First(a => a.ReservationsNr == id);
             }
-            return null;
         }
 
+        public void Cerate(Reservation reservation)
+        {
+            using (AutoReservationContext context = new AutoReservationContext())
+            {
+                context.Reservationen.Add(reservation);
+                context.SaveChanges();
+            }
+        }
+        
         public void Update(Reservation reservation)
         {
             using (AutoReservationContext context = new AutoReservationContext())
             {
                 context.Reservationen.Update(reservation);
+                context.SaveChanges();
+            }
+        }
+
+        public void Remove(Reservation reservation)
+        {
+            using (AutoReservationContext context = new AutoReservationContext())
+            {
+                context.Reservationen.Remove(reservation);
+                context.SaveChanges();
             }
         }
     }

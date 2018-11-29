@@ -19,24 +19,38 @@ namespace AutoReservation.BusinessLayer
                 }
             }
         }
-
         public Kunde GetById(int id)
         {
-            foreach (Kunde kunde in List)
+            using (AutoReservationContext context = new AutoReservationContext())
             {
-                if (kunde.Id == id)
-                {
-                    return kunde;
-                }
+                return context.Kunden.First(a => a.Id == id);
             }
-            return null;
         }
 
+        public void Cerate(Kunde kunde)
+        {
+            using (AutoReservationContext context = new AutoReservationContext())
+            {
+                context.Kunden.Add(kunde);
+                context.SaveChanges();
+            }
+        }
+        
         public void Update(Kunde kunde)
         {
             using (AutoReservationContext context = new AutoReservationContext())
             {
                 context.Kunden.Update(kunde);
+                context.SaveChanges();
+            }
+        }
+
+        public void Remove(Kunde kunde)
+        {
+            using (AutoReservationContext context = new AutoReservationContext())
+            {
+                context.Kunden.Remove(kunde);
+                context.SaveChanges();
             }
         }
     }
