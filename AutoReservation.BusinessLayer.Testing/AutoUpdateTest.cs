@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using AutoReservation.Dal.Entities;
 using AutoReservation.TestEnvironment;
 using Xunit;
 
@@ -13,7 +15,11 @@ namespace AutoReservation.BusinessLayer.Testing
         [Fact]
         public void UpdateAutoTest()
         {
-            throw new NotImplementedException("Test not implemented.");
+            Auto auto = Target.List[0];
+            auto.Tagestarif = 130;
+            int autoid = auto.Id;
+            Target.Update(auto);
+            Assert.Equal(130,Target.GetById(autoid).Tagestarif);
         }
     }
 }

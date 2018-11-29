@@ -7,33 +7,33 @@ namespace AutoReservation.Common.DataTransferObjects
 
         public int Id
         {
-            get { return Id;}
-            set { Id = value; }
+            get;
+            set;
         }
         public String Marke
         {
-            get { return Marke;}
-            set { Marke = value; }
+            get;
+            set;
         }
         public int Tagestarif
         {
-            get { return Tagestarif;}
-            set { Tagestarif = value; }
+            get;
+            set;
         }
         public int Basistarif
         {
-            get { return Basistarif;}
-            set { Basistarif = value; }
+            get;
+            set;
         }
         public AutoKlasse AutoKlasse
         {
-            get { return AutoKlasse;}
-            set { AutoKlasse = value; }
+            get;
+            set;
         }
-        public DateTime RowVersion
+        public Byte[] RowVersion
         {
-            get { return RowVersion;}
-            set { RowVersion = value; }
+            get;
+            set;
         }
         
         public override string ToString()
