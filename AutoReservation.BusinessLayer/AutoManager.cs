@@ -22,11 +22,18 @@ namespace AutoReservation.BusinessLayer
         {
             using (AutoReservationContext context = new AutoReservationContext())
             {
-                
+                return context.Autos.First(a => a.Id == id);
             }
         }
 
-        public void 
+        public void Cerate(Auto auto)
+        {
+            using (AutoReservationContext context = new AutoReservationContext())
+            {
+                context.Autos.Add(auto);
+                context.SaveChanges();
+            }
+        }
         
         public void Update(Auto auto)
         {

@@ -15,11 +15,29 @@ namespace AutoReservation.BusinessLayer.Testing
         [Fact]
         public void UpdateAutoTest()
         {
-            Auto auto = Target.List[0];
+            Auto auto = Target.List.First();
             auto.Tagestarif = 130;
             int autoid = auto.Id;
             Target.Update(auto);
             Assert.Equal(130,Target.GetById(autoid).Tagestarif);
+        }
+        [Fact]
+        public void CreateAutoTest()
+        {
+            Auto auto = new Auto();
+            auto.Marke = "Ferrari Cunque Cento";
+            auto.Tagestarif = 230;
+            Target.Cerate(auto);
+            
+            Assert.Equal(Target.List.First(a => a.Marke == auto.Marke).Tagestarif, auto.Tagestarif);
+        }
+
+        [Fact]
+        public void RemoveAutoTest()
+        {
+            Auto auto = Target.List.Last();
+            Target.Remove(auto);
+            Assert.Throws<InvalidOperationException>(()=>Target.GetById(auto.Id));
         }
     }
 }
