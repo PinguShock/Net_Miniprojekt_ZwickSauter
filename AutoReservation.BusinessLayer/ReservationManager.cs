@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using AutoReservation.Dal;
 using AutoReservation.Dal.Entities;
@@ -26,12 +27,13 @@ namespace AutoReservation.BusinessLayer
             }
         }
 
-        public void Cerate(Reservation reservation)
+        public void Create(Reservation reservation)
         {
-            using (AutoReservationContext context = new AutoReservationContext())
-            {
-                context.Reservationen.Add(reservation);
-                context.SaveChanges();
+            using (AutoReservationContext context = new AutoReservationContext()) {
+                if (isValid(reservation)) { 
+                    context.Reservationen.Add(reservation);
+                    context.SaveChanges();
+                }
             }
         }
         
@@ -39,8 +41,10 @@ namespace AutoReservation.BusinessLayer
         {
             using (AutoReservationContext context = new AutoReservationContext())
             {
-                context.Reservationen.Update(reservation);
-                context.SaveChanges();
+                if (isValid(reservation)) {
+                    context.Reservationen.Update(reservation);
+                    context.SaveChanges();
+                }
             }
         }
 
@@ -51,6 +55,27 @@ namespace AutoReservation.BusinessLayer
                 context.Reservationen.Remove(reservation);
                 context.SaveChanges();
             }
+        }
+
+        private bool isValid(Reservation reservation) {
+            System.TimeSpan diff = reservation.Bis.Subtract(reservation.Von);
+            System.TimeSpan minDuration = DateTime.Now.AddHours(24).Subtract(DateTime.Now);
+            if (diff < minDuration) {
+                throw new InvalidDateRangeException("Duration less than 24h!!");
+            }
+            if (reservation.Von > reservation.Bis) {
+                throw new InvalidDateRangeException("Startdate before Enddate!!");
+            }
+            
+            foreach (Reservation r in List) {
+                if (r.ReservationsNr != reservation.ReservationsNr 
+                    && r.AutoId == reservation.AutoId 
+                    && ((r.Bis > reservation.Von && r.Von < reservation.Bis) 
+                        || (r.Von < reservation.Bis && r.Bis > reservation.Von))) {
+                    throw new AutoUnavailableException("Car not available!!");
+                }
+            }
+            return true;
         }
     }
 }

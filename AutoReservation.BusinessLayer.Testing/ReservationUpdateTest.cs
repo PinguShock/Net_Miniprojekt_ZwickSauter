@@ -35,9 +35,9 @@ namespace AutoReservation.BusinessLayer.Testing
                 KundeId = KTarget.List.Last().Id,
                 AutoId = ATarget.List.Last().Id,
                 Von = DateTime.Now,
-                Bis = DateTime.Now.AddHours(12)
+                Bis = DateTime.Now.AddHours(24)
             };
-            Target.Cerate(reservation);
+            Target.Create(reservation);
             
             Assert.Equal(Target.List.First(r => r.Kunde==reservation.Kunde&&r.Von==reservation.Von).Bis,reservation.Bis);
         }
