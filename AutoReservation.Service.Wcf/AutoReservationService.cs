@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Diagnostics;
 using AutoReservation.BusinessLayer;
+using AutoReservation.Common.Interfaces;
 using AutoReservation.Dal.Entities;
 
 namespace AutoReservation.Service.Wcf
 {
-    public class AutoReservationService
+    public class AutoReservationService : IAutoReservationService
     {
         private AutoManager autosManager;
         private KundeManager kundeManager;

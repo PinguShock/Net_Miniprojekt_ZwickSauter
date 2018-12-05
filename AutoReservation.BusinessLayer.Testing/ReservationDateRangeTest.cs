@@ -47,7 +47,7 @@ namespace AutoReservation.BusinessLayer.Testing
                 KundeId = 1,
                 AutoId = 1,
                 Von = DateTime.Now,
-                Bis = DateTime.Now.AddHours(24)
+                Bis = DateTime.Now.AddDays(1)
             };
 
             Target.Create(reservation1);
