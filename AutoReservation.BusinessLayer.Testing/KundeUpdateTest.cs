@@ -28,7 +28,7 @@ namespace AutoReservation.BusinessLayer.Testing
             kunde.Vorname = "Max";
             kunde.Nachname = "Mustermann";
             kunde.Geburtsdatum = DateTime.Today.AddYears(-20);
-            Target.Cerate(kunde);
+            Target.Create(kunde);
             
             Assert.Equal(Target.List.First(a => a.Vorname == kunde.Vorname&&a.Nachname==kunde.Nachname).Geburtsdatum, kunde.Geburtsdatum);
         }

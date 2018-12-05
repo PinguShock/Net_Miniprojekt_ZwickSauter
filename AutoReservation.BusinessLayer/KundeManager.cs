@@ -27,7 +27,7 @@ namespace AutoReservation.BusinessLayer
             }
         }
 
-        public void Cerate(Kunde kunde)
+        public void Create(Kunde kunde)
         {
             using (AutoReservationContext context = new AutoReservationContext())
             {

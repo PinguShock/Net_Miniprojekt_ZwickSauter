@@ -26,7 +26,7 @@ namespace AutoReservation.BusinessLayer
             }
         }
 
-        public void Cerate(Auto auto)
+        public void Create(Auto auto)
         {
             using (AutoReservationContext context = new AutoReservationContext())
             {
