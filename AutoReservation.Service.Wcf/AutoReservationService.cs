@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using AutoReservation.BusinessLayer;
 using AutoReservation.Common.DataTransferObjects;
+using AutoReservation.Common.Interfaces;
 using AutoReservation.Service.Wcf;
 
 namespace AutoDtoReservationDto.Service.Wcf
 {
-    public class AutoReservationService
+    public class AutoReservationService : IAutoReservationService
     {
         private readonly AutoManager AutoManager = new AutoManager();
         private readonly KundeManager KundeManager = new KundeManager();
@@ -17,14 +18,17 @@ namespace AutoDtoReservationDto.Service.Wcf
         private static void WriteActualMethod()
             => Console.WriteLine($"Calling: {new StackTrace().GetFrame(1).GetMethod().Name}");
 
-        public List<AutoDto> Autos => AutoManager.List.ConvertToDtos();
+        public List<AutoDto> Autos()
+        {
+            return AutoManager.List.ConvertToDtos();
+        }
 
         public AutoDto GetAutoById(int id)
         {
             return AutoManager.GetById(id).ConvertToDto();
         }
 
-        public void Cerate(AutoDto autoDto)
+        public void Create(AutoDto autoDto)
         {
             AutoManager.Create(autoDto.ConvertToEntity());
         }
@@ -38,14 +42,18 @@ namespace AutoDtoReservationDto.Service.Wcf
         {
             AutoManager.Remove(autoDto.ConvertToEntity());
         }
-        public List<KundeDto> Kunden => KundeManager.List.ConvertToDtos();
+
+        public List<KundeDto> Kunden()
+        {
+            return KundeManager.List.ConvertToDtos(); 
+        }
 
         public KundeDto GetKundeById(int id)
         {
             return KundeManager.GetById(id).ConvertToDto();
         }
 
-        public void Cerate(KundeDto kundeDto)
+        public void Create(KundeDto kundeDto)
         {
             KundeManager.Create(kundeDto.ConvertToEntity());
         }
@@ -59,7 +67,11 @@ namespace AutoDtoReservationDto.Service.Wcf
         {
             KundeManager.Remove(kundeDto.ConvertToEntity());
         }
-        public List<ReservationDto> Reservationen => ReservationManager.List.ConvertToDtos();
+
+        public List<ReservationDto> Reservationen()
+        { 
+            return  ReservationManager.List.ConvertToDtos();
+        }
 
         public ReservationDto GetReservationById(int id)
         {

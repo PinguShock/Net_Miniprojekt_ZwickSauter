@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ServiceModel;
+using AutoDtoReservationDto.Service.Wcf;
 using AutoReservation.Common.Interfaces;
 using Xunit;
 
