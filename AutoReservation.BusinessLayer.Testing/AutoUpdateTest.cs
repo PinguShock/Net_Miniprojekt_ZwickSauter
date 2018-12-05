@@ -27,7 +27,7 @@ namespace AutoReservation.BusinessLayer.Testing
             Auto auto = new Auto();
             auto.Marke = "Ferrari Cunque Cento";
             auto.Tagestarif = 230;
-            Target.Cerate(auto);
+            Target.Create(auto);
             
             Assert.Equal(Target.List.First(a => a.Marke == auto.Marke).Tagestarif, auto.Tagestarif);
         }

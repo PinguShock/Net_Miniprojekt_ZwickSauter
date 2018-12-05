@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Globalization;
+using System.Linq;
+using AutoReservation.Common.DataTransferObjects;
 using AutoReservation.Common.Interfaces;
 using AutoReservation.TestEnvironment;
 using Xunit;
@@ -15,19 +18,19 @@ namespace AutoReservation.Service.Wcf.Testing
         [Fact]
         public void GetAutosTest()
         {
-            throw new NotImplementedException("Test not implemented.");
+            Assert.True(Target.Autos().Count>0);
         }
 
         [Fact]
         public void GetKundenTest()
         {
-            throw new NotImplementedException("Test not implemented.");
+            Assert.True(Target.Kunden().Count>0);
         }
 
         [Fact]
         public void GetReservationenTest()
         {
-            throw new NotImplementedException("Test not implemented.");
+            Assert.True(Target.Reservationen().Count>0);
         }
 
         #endregion
@@ -37,19 +40,22 @@ namespace AutoReservation.Service.Wcf.Testing
         [Fact]
         public void GetAutoByIdTest()
         {
-            throw new NotImplementedException("Test not implemented.");
+            AutoDto auto = Target.Autos().First();
+            Assert.Equal(auto.Marke,Target.GetAutoById(auto.Id).Marke);
         }
 
         [Fact]
         public void GetKundeByIdTest()
         {
-            throw new NotImplementedException("Test not implemented.");
+            KundeDto kunde = Target.Kunden().First();
+            Assert.Equal(kunde.Vorname,Target.GetKundeById(kunde.Id).Vorname);
         }
 
         [Fact]
         public void GetReservationByNrTest()
         {
-            throw new NotImplementedException("Test not implemented.");
+            ReservationDto reservation = Target.Reservationen().First();
+            Assert.Equal(reservation.Von,Target.GetReservationById(reservation.ReservationsNr).Von);
         }
 
         #endregion
@@ -59,19 +65,19 @@ namespace AutoReservation.Service.Wcf.Testing
         [Fact]
         public void GetAutoByIdWithIllegalIdTest()
         {
-            throw new NotImplementedException("Test not implemented.");
+            Assert.Throws<InvalidOperationException>(()=>Target.GetAutoById(99999));
         }
 
         [Fact]
         public void GetKundeByIdWithIllegalIdTest()
         {
-            throw new NotImplementedException("Test not implemented.");
+            Assert.Throws<InvalidOperationException>(()=>Target.GetKundeById(99999));
         }
 
         [Fact]
         public void GetReservationByNrWithIllegalIdTest()
         {
-            throw new NotImplementedException("Test not implemented.");
+            Assert.Throws<InvalidOperationException>(()=>Target.GetReservationById(99999));
         }
 
         #endregion
@@ -81,19 +87,42 @@ namespace AutoReservation.Service.Wcf.Testing
         [Fact]
         public void InsertAutoTest()
         {
-            throw new NotImplementedException("Test not implemented.");
+            AutoDto auto = new AutoDto
+            {
+                AutoKlasse = AutoKlasse.Luxusklasse,
+                Basistarif = 200,
+                Marke = "Lamborghini 230",
+                Tagestarif = 45
+            };
+            Target.Create(auto);
+            Assert.Equal(auto.Marke,Target.Autos().Last().Marke);
         }
 
         [Fact]
         public void InsertKundeTest()
         {
-            throw new NotImplementedException("Test not implemented.");
+            KundeDto kunde = new KundeDto
+            {
+                Vorname = "Helene",
+                Nachname = "Fischer",
+                Geburtsdatum = DateTime.Parse("16.09.1956")
+            };
+            Target.Create(kunde);
+            Assert.Equal(kunde.Vorname,Target.Kunden().Last().Vorname);
         }
 
         [Fact]
         public void InsertReservationTest()
         {
-            throw new NotImplementedException("Test not implemented.");
+            ReservationDto res = new ReservationDto
+            {
+                Auto = Target.Autos().Last(),
+                Kunde = Target.Kunden().Last(),
+                Von = DateTime.Now.AddHours(18),
+                Bis = DateTime.Now.AddHours(24)
+            };
+            Target.Create(res);
+            Assert.Equal(res.Auto.Marke,Target.Reservationen().Last().Auto.Marke);
         }
 
         #endregion
