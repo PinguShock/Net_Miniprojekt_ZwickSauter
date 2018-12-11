@@ -10,17 +10,16 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace AutoReservation.GUI.Views
 {
     /// <summary>
-    /// Interaktionslogik für AutoView.xaml
+    /// Interaktionslogik für EditAutoWindow.xaml
     /// </summary>
-    public partial class AutoView 
+    public partial class EditAutoWindow : Window
     {
-        public AutoView()
+        public EditAutoWindow()
         {
             InitializeComponent();
         }

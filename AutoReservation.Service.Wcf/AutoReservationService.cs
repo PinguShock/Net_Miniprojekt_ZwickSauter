@@ -24,6 +24,7 @@ namespace AutoReservation.Service.Wcf
 
         public List<AutoDto> Autos()
         {
+            WriteActualMethod();
             return AutoManager.List.ConvertToDtos();
         }
 
@@ -45,6 +46,7 @@ namespace AutoReservation.Service.Wcf
 
         public void CreateAuto(AutoDto autoDto)
         {
+            WriteActualMethod();
             AutoManager.Create(autoDto.ConvertToEntity());
         }
         
@@ -66,11 +68,13 @@ namespace AutoReservation.Service.Wcf
 
         public void RemoveAuto(AutoDto autoDto)
         {
+            WriteActualMethod();
             AutoManager.Remove(autoDto.ConvertToEntity());
         }
 
         public List<KundeDto> Kunden()
         {
+            WriteActualMethod();
             return KundeManager.List.ConvertToDtos(); 
         }
 
@@ -91,6 +95,7 @@ namespace AutoReservation.Service.Wcf
 
         public void CreateKunde(KundeDto kundeDto)
         {
+            WriteActualMethod();
             KundeManager.Create(kundeDto.ConvertToEntity());
         }
         
@@ -111,11 +116,13 @@ namespace AutoReservation.Service.Wcf
 
         public void RemoveKunde(KundeDto kundeDto)
         {
+            WriteActualMethod();
             KundeManager.Remove(kundeDto.ConvertToEntity());
         }
 
         public List<ReservationDto> Reservationen()
-        { 
+        {
+            WriteActualMethod();
             return  ReservationManager.List.ConvertToDtos();
         }
 
@@ -191,6 +198,7 @@ namespace AutoReservation.Service.Wcf
 
         public void RemoveReservation(ReservationDto reservationDto)
         {
+            WriteActualMethod();
             ReservationManager.Remove(reservationDto.ConvertToEntity());
         }
 

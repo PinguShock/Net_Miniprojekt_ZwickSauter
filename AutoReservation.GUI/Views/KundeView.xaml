@@ -9,6 +9,10 @@
       Title="KundeView">
 
     <Grid>
-        
+        <DataGrid x:Name="CustomerTable" HorizontalAlignment="Left" Height="430" Margin="10,10,0,0" VerticalAlignment="Top" Width="645"/>
+        <Button x:Name="AddCustomer" Content="Button" HorizontalAlignment="Left" Margin="676,29,0,0" VerticalAlignment="Top" Width="114" Height="39"/>
+        <Button x:Name="EditCustomer" Content="Button" HorizontalAlignment="Left" Margin="676,73,0,0" VerticalAlignment="Top" Width="114" Height="39"/>
+        <Button x:Name="RemoveCustomer" Content="Button" HorizontalAlignment="Left" Margin="676,117,0,0" VerticalAlignment="Top" Width="114" Height="39"/>
+
     </Grid>
 </Page>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AutoReservation.GUI.Views;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,17 @@ namespace AutoReservation.GUI
         public MainWindow()
         {
             InitializeComponent();
+
+
         }
+
+        private void Button_Click(object sender, RoutedEventArgs e) {
+            EditAutoWindow editWindow = new EditAutoWindow();
+            editWindow.Show();
+
+            
+
+        }
+
     }
 }

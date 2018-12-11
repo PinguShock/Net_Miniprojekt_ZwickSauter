@@ -9,6 +9,10 @@
       Title="ReservationView">
 
     <Grid>
-        
+        <DataGrid x:Name="ReservationTable" HorizontalAlignment="Left" Height="430" Margin="10,10,0,0" VerticalAlignment="Top" Width="645"/>
+        <Button x:Name="AddReservation" Content="Button" HorizontalAlignment="Left" Margin="676,29,0,0" VerticalAlignment="Top" Width="114" Height="39"/>
+        <Button x:Name="EditReservation" Content="Button" HorizontalAlignment="Left" Margin="676,73,0,0" VerticalAlignment="Top" Width="114" Height="39"/>
+        <Button x:Name="RemoveReservation" Content="Button" HorizontalAlignment="Left" Margin="676,117,0,0" VerticalAlignment="Top" Width="114" Height="39"/>
+
     </Grid>
 </Page>

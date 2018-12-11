@@ -5,19 +5,5 @@
              StartupUri="MainWindow.xaml">
     <Application.Resources>
 
-        
-        <!-- Default Button style -->
-        <Style x:Key="DefaultButtonStyle" TargetType="Button">
-            <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="BorderBrush" Value="Black" />
-            <Setter Property="Background" Value="Transparent" />
-            <Setter Property="Foreground" Value="Black" />
-            <Setter Property="FontFamily" Value="Segoe UI" />
-            <Setter Property="Margin" Value="2" />
-            <Setter Property="Padding" Value="10 2 10 2" />
-            <Setter Property="FontSize" Value="13" />
-        </Style>
-        <!-- Inherit style to all Buttons -->
-        <Style TargetType="Button" BasedOn="{StaticResource DefaultButtonStyle}"></Style>
     </Application.Resources>
 </Application>
