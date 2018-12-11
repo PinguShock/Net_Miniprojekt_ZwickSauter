@@ -4,6 +4,6 @@ namespace AutoReservation.Common.DataTransferObjects.Faults
 {
     public class AutoUnavailableFault
     {
-        public String Message { get; set; }§
+        public String Message { get; set; }
     }
 }
