@@ -1,0 +1,58 @@
+﻿<Window x:Class="AutoReservation.GUI.Views.EditAutoWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:AutoReservation.GUI.Views"
+        mc:Ignorable="d"
+        WindowStyle="ToolWindow"
+        Title="EditAutoWindow" Height="350" Width="400">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Styles.xaml"></ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    
+    <Grid>
+        <!-- Vorlesung 02 S.49++ Dialogfenster -->
+
+
+
+        <Grid>
+            <StackPanel Margin="16">
+                <Label>Marke:</Label>
+                <TextBox Text="{Binding Marke}"></TextBox>
+
+
+                <Label>Klasse:</Label>
+                <TextBox Text="{Binding Price}"></TextBox>
+
+                <Label>Tagestarif:</Label>
+                <TextBox Text="{Binding AutoKlasse}"></TextBox>
+
+                <Label>Basistarif:</Label>
+                <TextBox Text="{Binding Basistarif}"></TextBox>
+                
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="50px"/>
+                        <RowDefinition Height="50px"/>
+
+                    </Grid.RowDefinitions>
+
+                    <Button x:Name="OkButton" Content="Bestätigen" Style="{StaticResource ResourceKey=DefaultButtonStyle}" Grid.Row="0"/>
+                    <Button IsCancel="true" Content="Abbrechen" Style="{StaticResource DefaultButtonStyle}" Grid.Row="1"/>
+
+                </Grid>
+            </StackPanel>
+            
+            
+        </Grid>
+    </Grid>
+</Window>

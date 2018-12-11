@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace AutoReservation.GUI.Views
 {
     /// <summary>
-    /// Interaktionslogik für AutoView.xaml
+    /// Interaktionslogik für AutoViewTest.xaml
     /// </summary>
-    public partial class AutoView 
+    public partial class AutoViewTest : Page
     {
-        public AutoView()
+        public AutoViewTest()
         {
             InitializeComponent();
         }

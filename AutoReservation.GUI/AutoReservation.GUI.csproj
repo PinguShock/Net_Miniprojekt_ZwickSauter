@@ -52,6 +52,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -70,13 +71,21 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Factory\IServiceFactory.cs" />
     <Compile Include="ViewModels\AutoViewModel.cs" />
+    <Compile Include="ViewModels\CommandBaseClass.cs" />
     <Compile Include="ViewModels\KundeViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="ViewModels\ReservationViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="Views\AutoView.xaml.cs">
       <DependentUpon>AutoView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\AutoViewTest.xaml.cs">
+      <DependentUpon>AutoViewTest.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EditAutoWindow.xaml.cs">
+      <DependentUpon>EditAutoWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\KundeView.xaml.cs">
       <DependentUpon>KundeView.xaml</DependentUpon>
@@ -96,7 +105,19 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Styles.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\AutoView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\AutoViewTest.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\EditAutoWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -127,6 +148,12 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <Content Include="fonts\FontAwesome.otf" />
+    <Content Include="fonts\fontawesome-webfont.ttf" />
+    <Content Include="fonts\fontawesome-webfont.eot" />
+    <Content Include="fonts\fontawesome-webfont.woff" />
+    <Content Include="fonts\fontawesome-webfont.woff2" />
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -149,7 +176,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Converters\" />
-    <Folder Include="Factory\" />
     <Folder Include="Images\" />
   </ItemGroup>
   <ItemGroup>
@@ -157,6 +183,9 @@
       <Project>{22972439-3FFF-41D2-B5AE-6C06ABC66EB4}</Project>
       <Name>AutoReservation.Common</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="fonts\fontawesome-webfont.svg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
