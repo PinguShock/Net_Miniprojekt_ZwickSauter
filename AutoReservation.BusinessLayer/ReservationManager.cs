@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using AutoReservation.BusinessLayer.Exceptions;
 using AutoReservation.Dal;
 using AutoReservation.Dal.Entities;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace AutoReservation.BusinessLayer
 {
@@ -41,9 +44,15 @@ namespace AutoReservation.BusinessLayer
         {
             using (AutoReservationContext context = new AutoReservationContext())
             {
-                if (isValid(reservation)) {
-                    context.Reservationen.Update(reservation);
-                    context.SaveChanges();
+                try{
+                    if (isValid(reservation)) {
+                        context.Reservationen.Update(reservation);
+                        context.SaveChanges();
+                    }
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    throw new OptimisticConcurrencyException<Reservation>("Data has been modified!");
                 }
             }
         }
@@ -66,15 +75,25 @@ namespace AutoReservation.BusinessLayer
             if (reservation.Von > reservation.Bis) {
                 throw new InvalidDateRangeException("Startdate before Enddate!!");
             }
-            
+
+            if (!isAvailable(reservation.AutoId, reservation.Von, reservation.Bis,reservation.ReservationsNr))
+            {
+                throw new AutoUnavailableException("Car not available!!");
+            }
+            return true;
+        }
+
+        public bool isAvailable(int autoId, DateTime von, DateTime bis, int resNr = 0)
+        {
             foreach (Reservation r in List) {
-                if (r.ReservationsNr != reservation.ReservationsNr 
-                    && r.AutoId == reservation.AutoId 
-                    && ((r.Bis > reservation.Von && r.Von < reservation.Bis) 
-                        || (r.Von < reservation.Bis && r.Bis > reservation.Von))) {
-                    throw new AutoUnavailableException("Car not available!!");
+                if (r.ReservationsNr != resNr 
+                    && r.AutoId == autoId 
+                    && ((r.Bis > von && r.Von < bis) 
+                        || (r.Von < bis && r.Bis > von))) {
+                    return false;
                 }
             }
+
             return true;
         }
     }

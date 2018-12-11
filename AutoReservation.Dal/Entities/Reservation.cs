@@ -14,12 +14,10 @@ namespace AutoReservation.Dal.Entities
         [Column("auto")]
         public int AutoId { get; set; }
         [ForeignKey("AutoId")]
-        [InverseProperty("Reservationen")]
         public Auto Auto { get; set; }
         [Column("kunde")]
         public int KundeId { get; set; }
         [ForeignKey("KundeId")]
-        [InverseProperty("Reservationen")]
         public Kunde Kunde { get; set; }
         [DataType(DataType.Date)]
         public DateTime Von { get; set; }

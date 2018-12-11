@@ -1,36 +1,71 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.ServiceModel;
 using AutoReservation.Common.DataTransferObjects;
+using AutoReservation.Common.DataTransferObjects.Faults;
+using AutoReservation.Dal.Entities;
 
 namespace AutoReservation.Common.Interfaces
 {
+    [ServiceContract]
     public interface IAutoReservationService
     {
+        [OperationContract]
          List<AutoDto> Autos();
 
+        [OperationContract]
+        [FaultContract(typeof(InvalidOperationFault))]
          AutoDto GetAutoById(int id);
 
-         void Create(AutoDto autoDto);
+        [OperationContract]
+         void CreateAuto(AutoDto autoDto);
 
-         void Update(AutoDto autoDto);
+        [OperationContract]
+        [FaultContract(typeof(OptimisticConcurrencyFault))]
+         void UpdateAuto(AutoDto autoDto);
 
-         void Remove(AutoDto autoDto);
+        [OperationContract]
+         void RemoveAuto(AutoDto autoDto);
+        
+        [OperationContract]
          List<KundeDto> Kunden();
 
+         [OperationContract]
+         [FaultContract(typeof(InvalidOperationFault))]
          KundeDto GetKundeById(int id);
 
-         void Create(KundeDto kundeDto);
+        [OperationContract]
+         void CreateKunde(KundeDto kundeDto);
 
-         void Update(KundeDto kundeDto);
+         [OperationContract]
+         [FaultContract(typeof(OptimisticConcurrencyFault))]
+         void UpdateKunde(KundeDto kundeDto);
 
-         void Remove(KundeDto kundeDto);
+         [OperationContract]
+         void RemoveKunde(KundeDto kundeDto);
+        
+         [OperationContract]
          List<ReservationDto> Reservationen();
 
+         [OperationContract]
+         [FaultContract(typeof(InvalidOperationFault))]
          ReservationDto GetReservationById(int id);
 
-         void Create(ReservationDto reservationDto);
+         [OperationContract]
+         [FaultContract(typeof(AutoUnavailableFault))]
+         [FaultContract(typeof(InvalidDateRangeFault))]
+         void CreateReservation(ReservationDto reservationDto);
 
-         void Update(ReservationDto reservationDto);
+         [OperationContract]
+         [FaultContract(typeof(OptimisticConcurrencyFault))]
+         [FaultContract(typeof(AutoUnavailableFault))]
+         [FaultContract(typeof(InvalidDateRangeFault))]
+         void UpdateReservation(ReservationDto reservationDto);
 
-         void Remove(ReservationDto reservationDto);
+         [OperationContract]
+         void RemoveReservation(ReservationDto reservationDto);
+
+         [OperationContract]
+         bool isAvailable(int autoId, DateTime von, DateTime bis, int resNr = 0);
     }
 }
