@@ -148,13 +148,13 @@ namespace AutoReservation.Service.Wcf
                 };
                 throw new FaultException<AutoUnavailableFault>(autoUnavailableFault);
             }
-            catch (InvalidCastException e)
+            catch (InvalidDateRangeException e)
             {
-                InvalidOperationFault invalidOperationFault = new InvalidOperationFault
+                InvalidDateRangeFault invalidDateRangeFault = new InvalidDateRangeFault
                 {
                     Message = e.Message
                 };
-                throw new FaultException<InvalidOperationFault>(invalidOperationFault);
+                throw new FaultException<InvalidDateRangeFault>(invalidDateRangeFault);
             }
         }
         
@@ -170,6 +170,22 @@ namespace AutoReservation.Service.Wcf
                     Message = e.Message
                 };
                 throw new FaultException<OptimisticConcurrencyFault>(optimisticConcurrencyFault);
+            }
+            catch (AutoUnavailableException e)
+            {
+                AutoUnavailableFault autoUnavailableFault = new AutoUnavailableFault
+                {
+                    Message = e.Message
+                };
+                throw new FaultException<AutoUnavailableFault>(autoUnavailableFault);
+            }
+            catch (InvalidDateRangeException e)
+            {
+                InvalidDateRangeFault invalidDateRangeFault = new InvalidDateRangeFault
+                {
+                    Message = e.Message
+                };
+                throw new FaultException<InvalidDateRangeFault>(invalidDateRangeFault);
             }
         }
 

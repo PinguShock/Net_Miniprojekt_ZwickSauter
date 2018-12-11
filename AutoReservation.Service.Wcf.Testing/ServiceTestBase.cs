@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Globalization;
 using System.Linq;
+using System.ServiceModel;
 using AutoReservation.BusinessLayer;
 using AutoReservation.BusinessLayer.Exceptions;
 using AutoReservation.Common.DataTransferObjects;
+using AutoReservation.Common.DataTransferObjects.Faults;
 using AutoReservation.Common.Interfaces;
 using AutoReservation.Dal.Entities;
 using AutoReservation.TestEnvironment;
@@ -69,19 +71,19 @@ namespace AutoReservation.Service.Wcf.Testing
         [Fact]
         public void GetAutoByIdWithIllegalIdTest()
         {
-            Assert.Throws<InvalidOperationException>(()=>Target.GetAutoById(99999));
+            Assert.Throws<FaultException<InvalidOperationFault>>(()=>Target.GetAutoById(99999));
         }
 
         [Fact]
         public void GetKundeByIdWithIllegalIdTest()
         {
-            Assert.Throws<InvalidOperationException>(()=>Target.GetKundeById(99999));
+            Assert.Throws<FaultException<InvalidOperationFault>>(()=>Target.GetKundeById(99999));
         }
 
         [Fact]
         public void GetReservationByNrWithIllegalIdTest()
         {
-            Assert.Throws<InvalidOperationException>(()=>Target.GetReservationById(99999));
+            Assert.Throws<FaultException<InvalidOperationFault>>(()=>Target.GetReservationById(99999));
         }
 
         #endregion
@@ -138,7 +140,7 @@ namespace AutoReservation.Service.Wcf.Testing
         {
             AutoDto auto = Target.Autos().Last();
             Target.RemoveAuto(auto);
-            Assert.Throws<InvalidOperationException>(() => Target.GetAutoById(auto.Id));
+            Assert.Throws<FaultException<InvalidOperationFault>>(() => Target.GetAutoById(auto.Id));
         }
 
         [Fact]
@@ -146,7 +148,7 @@ namespace AutoReservation.Service.Wcf.Testing
         {
             KundeDto kunde = Target.Kunden().Last();
             Target.RemoveKunde(kunde);
-            Assert.Throws<InvalidOperationException>(() => Target.GetKundeById(kunde.Id));
+            Assert.Throws<FaultException<InvalidOperationFault>>(() => Target.GetKundeById(kunde.Id));
         }
 
         [Fact]
@@ -154,7 +156,7 @@ namespace AutoReservation.Service.Wcf.Testing
         {
             ReservationDto res = Target.Reservationen().Last();
             Target.RemoveReservation(res);
-            Assert.Throws<InvalidOperationException>(() => Target.GetReservationById(res.ReservationsNr));
+            Assert.Throws<FaultException<InvalidOperationFault>>(() => Target.GetReservationById(res.ReservationsNr));
         }
 
         #endregion
@@ -202,7 +204,7 @@ namespace AutoReservation.Service.Wcf.Testing
             auto2.Tagestarif = 165;
             
             Target.UpdateAuto(auto2);
-            Assert.Throws<OptimisticConcurrencyException<Auto>>(() => Target.UpdateAuto(auto1));
+            Assert.Throws<FaultException<OptimisticConcurrencyFault>>(() => Target.UpdateAuto(auto1));
         }
 
         [Fact]
@@ -215,7 +217,7 @@ namespace AutoReservation.Service.Wcf.Testing
             kunde2.Geburtsdatum = DateTime.Now.AddYears(-24);
             
             Target.UpdateKunde(kunde2);
-            Assert.Throws<OptimisticConcurrencyException<Kunde>>(() => Target.UpdateKunde(kunde1));
+            Assert.Throws<FaultException<OptimisticConcurrencyFault>>(() => Target.UpdateKunde(kunde1));
         }
 
         [Fact]
@@ -228,7 +230,7 @@ namespace AutoReservation.Service.Wcf.Testing
             res2.Bis = res2.Bis.AddHours(3);
             
             Target.UpdateReservation(res1);
-            Assert.Throws<OptimisticConcurrencyException<Reservation>>(() => Target.UpdateReservation(res1));
+            Assert.Throws<FaultException<OptimisticConcurrencyFault>>(() => Target.UpdateReservation(res1));
         }
 
         #endregion
@@ -245,7 +247,7 @@ namespace AutoReservation.Service.Wcf.Testing
                 Von = DateTime.Now,
                 Bis = DateTime.Now.AddHours(23)
             };
-            Assert.Throws<InvalidDateRangeException>(() => Target.CreateReservation(res));
+            Assert.Throws<FaultException<InvalidDateRangeFault>>(() => Target.CreateReservation(res));
 
         }
 
@@ -267,7 +269,7 @@ namespace AutoReservation.Service.Wcf.Testing
                 Von = DateTime.Now,
                 Bis = DateTime.Now.AddHours(43)
             };
-            Assert.Throws<AutoUnavailableException>(() => Target.CreateReservation(res2));
+            Assert.Throws<FaultException<AutoUnavailableFault>>(() => Target.CreateReservation(res2));
         }
 
         [Fact]
@@ -282,7 +284,7 @@ namespace AutoReservation.Service.Wcf.Testing
             };
             Target.CreateReservation(res);
             res.Bis = DateTime.Now.AddHours(17);
-            Assert.Throws<InvalidDateRangeException>(()=>Target.UpdateReservation(res));
+            Assert.Throws<FaultException<InvalidDateRangeFault>>(()=>Target.UpdateReservation(res));
         }
 
         [Fact]
@@ -305,7 +307,7 @@ namespace AutoReservation.Service.Wcf.Testing
             };
             Target.CreateReservation(res2);
             res1.Bis = DateTime.Now.AddHours(27);
-            Assert.Throws<AutoUnavailableException>(()=>Target.UpdateReservation(res1));
+            Assert.Throws<FaultException<AutoUnavailableFault>>(()=>Target.UpdateReservation(res1));
         }
 
         #endregion
