@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ServiceModel;
-using AutoDtoReservationDto.Service.Wcf;
 
 namespace AutoReservation.Service.Wcf.Host
 {

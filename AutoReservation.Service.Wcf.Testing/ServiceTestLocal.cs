@@ -1,4 +1,4 @@
-﻿using AutoDtoReservationDto.Service.Wcf;
+﻿using AutoReservation.Service.Wcf;
 using AutoReservation.Common.Interfaces;
 
 namespace AutoReservation.Service.Wcf.Testing

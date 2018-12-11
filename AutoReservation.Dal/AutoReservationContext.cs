@@ -26,9 +26,9 @@ namespace AutoReservation.Dal
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<StandardAuto>();
-            modelBuilder.Entity<LuxusklasseAuto>();
-            modelBuilder.Entity<MittelklasseAuto>();
+            modelBuilder.Entity<StandardAuto>().Property(p => p.RowVersion).IsConcurrencyToken();
+            modelBuilder.Entity<LuxusklasseAuto>().Property(p => p.RowVersion).IsConcurrencyToken();
+            modelBuilder.Entity<MittelklasseAuto>().Property(p => p.RowVersion).IsConcurrencyToken();
             
             base.OnModelCreating(modelBuilder);
         }

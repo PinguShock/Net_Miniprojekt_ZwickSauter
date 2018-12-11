@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.ServiceModel;
 using AutoReservation.BusinessLayer;
+using AutoReservation.BusinessLayer.Exceptions;
 using AutoReservation.Common.DataTransferObjects;
+using AutoReservation.Common.DataTransferObjects.Faults;
 using AutoReservation.Common.Interfaces;
+using AutoReservation.Dal.Entities;
 using AutoReservation.Service.Wcf;
 
-namespace AutoDtoReservationDto.Service.Wcf
+namespace AutoReservation.Service.Wcf
 {
     public class AutoReservationService : IAutoReservationService
     {
@@ -26,23 +30,43 @@ namespace AutoDtoReservationDto.Service.Wcf
 
         public AutoDto GetAutoById(int id)
         {
-            WriteActualMethod();
-            return AutoManager.GetById(id).ConvertToDto();
+            try
+            {
+                return AutoManager.GetById(id).ConvertToDto();
+            }
+            catch (InvalidOperationException)
+            {
+                InvalidOperationFault invalidOperationFault = new InvalidOperationFault
+                {
+                    Message = "Car not found!"
+                };
+                throw new FaultException<InvalidOperationFault>(invalidOperationFault);
+            }
         }
 
-        public void Create(AutoDto autoDto)
+        public void CreateAuto(AutoDto autoDto)
         {
             WriteActualMethod();
             AutoManager.Create(autoDto.ConvertToEntity());
         }
         
-        public void Update(AutoDto autoDto)
+        public void UpdateAuto(AutoDto autoDto)
         {
-            WriteActualMethod();
-            AutoManager.Update(autoDto.ConvertToEntity());
+            try
+            {
+                AutoManager.Update(autoDto.ConvertToEntity());
+            }
+            catch (OptimisticConcurrencyException<Auto> e)
+            {
+                OptimisticConcurrencyFault optimisticConcurrencyFault = new OptimisticConcurrencyFault
+                {
+                    Message = e.Message
+                };
+                throw new FaultException<OptimisticConcurrencyFault>(optimisticConcurrencyFault);
+            }
         }
 
-        public void Remove(AutoDto autoDto)
+        public void RemoveAuto(AutoDto autoDto)
         {
             WriteActualMethod();
             AutoManager.Remove(autoDto.ConvertToEntity());
@@ -56,23 +80,41 @@ namespace AutoDtoReservationDto.Service.Wcf
 
         public KundeDto GetKundeById(int id)
         {
-            WriteActualMethod();
+            try{
             return KundeManager.GetById(id).ConvertToDto();
+            }
+            catch (InvalidOperationException)
+            {
+                InvalidOperationFault invalidOperationFault = new InvalidOperationFault
+                {
+                    Message = "Customer not found!"
+                };
+                throw new FaultException<InvalidOperationFault>(invalidOperationFault);
+            }
         }
 
-        public void Create(KundeDto kundeDto)
+        public void CreateKunde(KundeDto kundeDto)
         {
             WriteActualMethod();
             KundeManager.Create(kundeDto.ConvertToEntity());
         }
         
-        public void Update(KundeDto kundeDto)
+        public void UpdateKunde(KundeDto kundeDto)
         {
-            WriteActualMethod();
+            try{
             KundeManager.Update(kundeDto.ConvertToEntity());
+            }
+            catch (OptimisticConcurrencyException<Kunde> e)
+            {
+                OptimisticConcurrencyFault optimisticConcurrencyFault = new OptimisticConcurrencyFault
+                {
+                    Message = e.Message
+                };
+                throw new FaultException<OptimisticConcurrencyFault>(optimisticConcurrencyFault);
+            }
         }
 
-        public void Remove(KundeDto kundeDto)
+        public void RemoveKunde(KundeDto kundeDto)
         {
             WriteActualMethod();
             KundeManager.Remove(kundeDto.ConvertToEntity());
@@ -86,26 +128,67 @@ namespace AutoDtoReservationDto.Service.Wcf
 
         public ReservationDto GetReservationById(int id)
         {
-            WriteActualMethod();
+            try{
             return ReservationManager.GetById(id).ConvertToDto();
+            }
+            catch (InvalidOperationException)
+            {
+                InvalidOperationFault invalidOperationFault = new InvalidOperationFault
+                {
+                    Message = "Reservation not found!"
+                };
+                throw new FaultException<InvalidOperationFault>(invalidOperationFault);
+            }
         }
 
-        public void Create(ReservationDto reservationDto)
+        public void CreateReservation(ReservationDto reservationDto)
         {
-            WriteActualMethod();
-            ReservationManager.Create(reservationDto.ConvertToEntity());
+            try
+            {
+                ReservationManager.Create(reservationDto.ConvertToEntity());
+            }
+            catch (AutoUnavailableException e)
+            {
+                AutoUnavailableFault autoUnavailableFault = new AutoUnavailableFault
+                {
+                    Message = e.Message
+                };
+                throw new FaultException<AutoUnavailableFault>(autoUnavailableFault);
+            }
+            catch (InvalidCastException e)
+            {
+                InvalidOperationFault invalidOperationFault = new InvalidOperationFault
+                {
+                    Message = e.Message
+                };
+                throw new FaultException<InvalidOperationFault>(invalidOperationFault);
+            }
         }
         
-        public void Update(ReservationDto reservationDto)
+        public void UpdateReservation(ReservationDto reservationDto)
         {
-            WriteActualMethod();
+            try{
             ReservationManager.Update(reservationDto.ConvertToEntity());
+            }
+            catch (OptimisticConcurrencyException<Reservation> e)
+            {
+                OptimisticConcurrencyFault optimisticConcurrencyFault = new OptimisticConcurrencyFault
+                {
+                    Message = e.Message
+                };
+                throw new FaultException<OptimisticConcurrencyFault>(optimisticConcurrencyFault);
+            }
         }
 
-        public void Remove(ReservationDto reservationDto)
+        public void RemoveReservation(ReservationDto reservationDto)
         {
             WriteActualMethod();
             ReservationManager.Remove(reservationDto.ConvertToEntity());
+        }
+
+        public bool isAvailable(int autoId, DateTime von, DateTime bis, int resNr = 0)
+        {
+            return ReservationManager.isAvailable(autoId, von, bis, resNr);
         }
     }
 }

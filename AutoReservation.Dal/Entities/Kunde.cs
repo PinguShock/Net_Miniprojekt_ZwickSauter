@@ -20,8 +20,6 @@ namespace AutoReservation.Dal.Entities
         public DateTime Geburtsdatum { get; set; }
         [Timestamp]
         public Byte[] RowVersion { get; set; }
-        [InverseProperty("Kunde")]
-        public ICollection<Reservation> Reservationen { get; set; }
   
     }
 }
