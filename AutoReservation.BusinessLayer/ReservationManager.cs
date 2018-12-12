@@ -18,7 +18,13 @@ namespace AutoReservation.BusinessLayer
             {
                 using (AutoReservationContext context = new AutoReservationContext())
                 {
-                    return context.Reservationen.ToList();
+                    List<Reservation> resList = context.Reservationen.ToList();
+                    foreach (var res in resList)
+                    {
+                        res.Auto = context.Autos.First(a => a.Id == res.AutoId);
+                        res.Kunde = context.Kunden.First(a => a.Id == res.KundeId);
+                    }
+                    return resList;
                 }
             }
         }
@@ -26,7 +32,10 @@ namespace AutoReservation.BusinessLayer
         {
             using (AutoReservationContext context = new AutoReservationContext())
             {
-                return context.Reservationen.First(a => a.ReservationsNr == id);
+                Reservation res =  context.Reservationen.First(a => a.ReservationsNr == id);
+                res.Auto = context.Autos.First(a => a.Id == res.AutoId);
+                res.Kunde = context.Kunden.First(a => a.Id == res.KundeId);
+                return res;
             }
         }
 

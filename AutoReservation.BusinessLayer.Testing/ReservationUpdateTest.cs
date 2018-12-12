@@ -39,7 +39,7 @@ namespace AutoReservation.BusinessLayer.Testing
             };
             Target.Create(reservation);
             
-            Assert.Equal(Target.List.First(r => r.Kunde==reservation.Kunde&&r.Von==reservation.Von).Bis,reservation.Bis);
+            Assert.Equal(Target.List.Last().Bis,reservation.Bis);
         }
 
         [Fact]
