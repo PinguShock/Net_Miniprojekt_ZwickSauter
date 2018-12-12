@@ -1,47 +1,132 @@
 ﻿using AutoReservation.Common.DataTransferObjects;
-using AutoReservation.GUI.Factory;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using AutoReservation.Common.Extensions;
 using AutoReservation.Common.Interfaces;
 using System.ServiceModel;
+using System;
+using System.Windows.Threading;
+using AutoReservation.GUI.Views;
 
-namespace AutoReservation.GUI.ViewModels
-{
+namespace AutoReservation.GUI.ViewModels {
     public class AutoViewModel : ViewModelBase
     {
         private List<AutoDto> originalAutos = new List<AutoDto>();
-        private ObservableCollection<AutoDto> _autos;
+        private ObservableCollection<AutoDto> _Autos;
 
-        public AutoViewModel(IServiceFactory factory) : base(factory) { }
+        private AutoDto auto;
+
+        public int Id { get; set; }
+        public String Marke { get; set; }
+        public int Tagestarif { get; set; }
+        public int Basistarif { get; set; }
+        public AutoKlasse Klasse { get; set; }
+
+        public RelayCommand EditCarCommand { get; set; }
+        public RelayCommand AddCarCommand { get; set; }
+        public RelayCommand RemoveCarCommand { get; set; }
+        public RelayCommand ConfirmEditAutoCommand { get; set; }
+        public RelayCommand DiscardButtonCommand { get; set; }
+
+        EditAutoViewModel editAutoVM;
+
+        private IAutoReservationService target;
+
+        public DispatcherTimer Timer { get; set; }
+
         public AutoViewModel() : base() {
             ChannelFactory<IAutoReservationService> channelFactory = new ChannelFactory<IAutoReservationService>("AutoReservationService");
-            IAutoReservationService target = channelFactory.CreateChannel();
-            autos = new ObservableCollection<AutoDto>(target.Autos());
+            target = channelFactory.CreateChannel();
+            Autos = new ObservableCollection<AutoDto>(target.Autos());
+
+            EditCarCommand = new RelayCommand(() => this.EditCar(), () => true);
+            AddCarCommand = new RelayCommand(() => this.AddCar(), () => true);
+            RemoveCarCommand = new RelayCommand(() => this.RemoveCar(), () => true);
+            ConfirmEditAutoCommand = new RelayCommand(() => this.ConfirmEdit(), () => true);
+            DiscardButtonCommand = new RelayCommand(() => this.Discard(), () => true);
         }
 
-        public ObservableCollection<AutoDto> autos {
-            get { return _autos; }
-            set { _autos = value; }
+        private void ConfirmEdit() {
+            ChannelFactory<IAutoReservationService> channelFactory = new ChannelFactory<IAutoReservationService>("AutoReservationService");
+            target = channelFactory.CreateChannel();
+
+            auto = new AutoDto {
+                Marke = Marke,
+                Tagestarif = Tagestarif,
+                Basistarif = Basistarif,
+                AutoKlasse = Klasse
+            };
+
+            if (Id == 0) {
+                Autos.Add(auto);
+                target.CreateAuto(auto);
+            } else {
+                auto.Id = Id;
+                Autos.Add(auto);
+                target.UpdateAuto(auto);
+            }
+            resetAuto();
+            editAutoVM.closeWindow();
+        }
+        
+
+        private void Discard() {
+            editAutoVM.closeWindow();
+        }
+
+        private void EditCar() {
+            if (SelectedAuto != null) {
+                setAuto(SelectedAuto); // Fill the editWindow with the Selected Auto
+            }
+            editAutoVM = new EditAutoViewModel();
+            editAutoVM.setContext(this);
+            this.Id = 20; // TODO: ID von Tabelle auswählen!!!!!!!!!!!!
+        }
+        
+        private void AddCar() {
+            editAutoVM = new EditAutoViewModel();
+            editAutoVM.setContext(this);
+        }
+        
+        private void RemoveCar() {
+            ChannelFactory<IAutoReservationService> channelFactory = new ChannelFactory<IAutoReservationService>("AutoReservationService");
+            target = channelFactory.CreateChannel();
+
+            target.RemoveAuto(SelectedAuto);
+            Autos.Remove(SelectedAuto);
+        }
+
+        public ObservableCollection<AutoDto> Autos {
+            get { return _Autos; }
+            set { _Autos = value; }
         }
 
         private AutoDto _selectedAuto;
-        public AutoDto selectedAuto {
+        public AutoDto SelectedAuto {
             get { return _selectedAuto; }
-            set {
-                if (_selectedAuto == value) {
-                    return;
-                }
-                _selectedAuto = value;
-                this.OnPropertyChanged(p => p.selectedAuto);
-            }
+            set { _selectedAuto = value; }
         }
 
+        #region HelperMethods
+
+        private void setAuto(AutoDto auto) {
+            Id = auto.Id;
+            Marke = auto.Marke;
+            Tagestarif = auto.Tagestarif;
+            Basistarif = auto.Basistarif;
+            Klasse = auto.AutoKlasse;
+        }
+
+        private void resetAuto() {
+            Id = 0;
+            Marke = "";
+            Tagestarif = 0;
+            Basistarif = 0;
+            Klasse = AutoKlasse.Standard;
+        }
+        #endregion
+
+
+        /*
         #region AddCar
         private CommandBaseClass _AddCarCommand;
         public ICommand AddCarCommand {
@@ -51,7 +136,7 @@ namespace AutoReservation.GUI.ViewModels
         }
 
         private void New() {
-            autos.Add(new AutoDto());
+            Autos.Add(new AutoDto());
         }
 
         private bool CanNew() {
@@ -70,7 +155,7 @@ namespace AutoReservation.GUI.ViewModels
             }
         }
         private void remove() {
-            service.Remove(selectedAuto);
+            service.RemoveAuto(selectedAuto);
             load();
         }
         private bool canRemove() {
@@ -87,12 +172,12 @@ namespace AutoReservation.GUI.ViewModels
             }
         }
         public void save() {
-            foreach (var a in autos) {
+            foreach (var a in Autos) {
                 if (a.Id == default(int)) {
-                    service.Create(a);
+                    service.CreateAuto(a);
                 } else {
                     var original = originalAutos.FirstOrDefault(o => o.Id == a.Id);
-                    service.Update(a);
+                    service.UpdateAuto(a);
                 }
             }
             load();
@@ -102,7 +187,7 @@ namespace AutoReservation.GUI.ViewModels
             if (!serviceExist) {
                 return false;
             }
-            return validate(autos);
+            return validate(Autos);
         }
 
         #endregion
@@ -116,17 +201,18 @@ namespace AutoReservation.GUI.ViewModels
             }
         }
         protected override void load() {
-            autos.Clear();
+            Autos.Clear();
             originalAutos.Clear();
             foreach (var a in service.Autos()) { 
-                autos.Add(a);
+                Autos.Add(a);
                 originalAutos.Add(a.copy());
             }
-            selectedAuto = autos.FirstOrDefault();
+            selectedAuto = Autos.FirstOrDefault();
         }
         private bool canLoadAuto() {
             return serviceExist;
         }
         #endregion
+    */
     }
 }

@@ -9,19 +9,46 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using AutoReservation.Common.Extensions;
 using AutoReservation.GUI.ViewModels;
+using System.ServiceModel;
+using AutoReservation.Common.Interfaces;
 
 namespace KundeReservation.GUI.ViewModels
 {
     public class KundeViewModel : ViewModelBase {
         private List<KundeDto> originalKunden = new List<KundeDto>();
         private ObservableCollection<KundeDto> _Kunden = new ObservableCollection<KundeDto>();
+        
+        public RelayCommand EditKundeCommand { get; set; }
+        public RelayCommand AddKundeCommand { get; set; }
+        public RelayCommand RemoveKundeCommand { get; set; }
 
-        public KundeViewModel(IServiceFactory factory) : base(factory) { }
         public KundeViewModel() : base() {
+            ChannelFactory<IAutoReservationService> channelFactory = new ChannelFactory<IAutoReservationService>("AutoReservationService");
+            IAutoReservationService target = channelFactory.CreateChannel();
+            Kunden = new ObservableCollection<KundeDto>(target.Kunden());
+
+            EditKundeCommand = new RelayCommand(() => this.EditKunde(), () => this.CanEdit);
+            AddKundeCommand = new RelayCommand(() => this.AddKunde(), () => this.CanAdd);
+            RemoveKundeCommand = new RelayCommand(() => this.RemoveKunde(), () => this.CanRemove);
         }
+
+        public bool CanAdd = true;
+        private void AddKunde() {
+            EditKundeViewModel editKundeVM = new EditKundeViewModel();
+        }
+        public bool CanEdit = true;
+        private void EditKunde() {
+            EditKundeViewModel editKundeVM = new EditKundeViewModel();
+        }
+        public bool CanRemove = true;
+        private void RemoveKunde() {
+            
+        }
+
 
         public ObservableCollection<KundeDto> Kunden {
             get { return _Kunden; }
+            set { _Kunden = value; }
         }
 
         private KundeDto _selectedKunde;
@@ -36,6 +63,9 @@ namespace KundeReservation.GUI.ViewModels
             }
         }
 
+
+        
+        /*
         #region AddKunde
         private CommandBaseClass _AddKundeCommand;
         public ICommand AddKundeCommand {
@@ -64,7 +94,7 @@ namespace KundeReservation.GUI.ViewModels
             }
         }
         private void remove() {
-            service.Remove(selectedKunde);
+            service.RemoveKunde(selectedKunde);
             load();
         }
         private bool canRemove() {
@@ -83,11 +113,11 @@ namespace KundeReservation.GUI.ViewModels
         public void save() {
             foreach (var k in Kunden) {
                 if (k.Id == default(int)) {
-                    service.Create(k);
+                    service.CreateKunde(k);
                 }
                 else {
                     var original = originalKunden.FirstOrDefault(o => o.Id == k.Id);
-                    service.Update(k);
+                    service.UpdateKunde(k);
                 }
             }
             load();
@@ -113,15 +143,16 @@ namespace KundeReservation.GUI.ViewModels
         protected override void load() {
             Kunden.Clear();
             originalKunden.Clear();
-            /*foreach (var a in service.GetAllKunden()) { // TODO: implementieren in KundeReservationService
+            foreach (var a in service.Kunden()) { // TODO: implementieren in KundeReservationService
                 Kunden.Add(a);
                 originalKunden.Add(a.copy());
-            }*/
+            }
             selectedKunde = Kunden.FirstOrDefault();
         }
         private bool canLoadKunde() {
             return serviceExist;
         }
         #endregion
+        */
     }
 }

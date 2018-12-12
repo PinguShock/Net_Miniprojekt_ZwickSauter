@@ -71,20 +71,30 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="EditWindows\AddReservationWindow.xaml.cs">
+      <DependentUpon>AddReservationWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="EditWindows\EditKundeWindow.xaml.cs">
+      <DependentUpon>EditKundeWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Factory\IServiceFactory.cs" />
+    <Compile Include="ViewModels\AddReservationViewModel.cs" />
     <Compile Include="ViewModels\AutoViewModel.cs" />
     <Compile Include="ViewModels\CommandBaseClass.cs" />
+    <Compile Include="ViewModels\EditAutoViewModel.cs" />
+    <Compile Include="ViewModels\EditKundeViewModel.cs" />
     <Compile Include="ViewModels\KundeViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
+    <Compile Include="ViewModels\RelayCommand.cs" />
     <Compile Include="ViewModels\ReservationViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />
     <Compile Include="Views\AutoView.xaml.cs">
       <DependentUpon>AutoView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\AutoViewTest.xaml.cs">
-      <DependentUpon>AutoViewTest.xaml</DependentUpon>
+    <Compile Include="Views\AutoViewBenutzersteuerelement.xaml.cs">
+      <DependentUpon>AutoViewBenutzersteuerelement.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\EditAutoWindow.xaml.cs">
+    <Compile Include="EditWindows\EditAutoWindow.xaml.cs">
       <DependentUpon>EditAutoWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\KundeView.xaml.cs">
@@ -93,6 +103,14 @@
     <Compile Include="Views\ReservationView.xaml.cs">
       <DependentUpon>ReservationView.xaml</DependentUpon>
     </Compile>
+    <Page Include="EditWindows\AddReservationWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="EditWindows\EditKundeWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -113,11 +131,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\AutoViewTest.xaml">
+    <Page Include="Views\AutoViewBenutzersteuerelement.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\EditAutoWindow.xaml">
+    <Page Include="EditWindows\EditAutoWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -176,7 +194,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Converters\" />
-    <Folder Include="Images\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AutoReservation.Common\AutoReservation.Common.csproj">

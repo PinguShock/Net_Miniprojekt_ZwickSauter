@@ -1,0 +1,75 @@
+﻿<Window x:Class="AutoReservation.GUI.Views.EditAutoWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        WindowStyle="ToolWindow"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:DataTransferObjects="clr-namespace:AutoReservation.Common.DataTransferObjects;assembly=AutoReservation.Common" 
+        xmlns:local1="clr-namespace:AutoReservation.GUI.ViewModels" 
+        
+        Title="EditAutoWindow" Height="350" Width="400" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Topmost="True">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Styles.xaml"></ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+
+            <ObjectDataProvider x:Key="Klassen"
+            MethodName="GetValues"
+            ObjectType="{x:Type sys:Enum}">
+                <ObjectDataProvider.MethodParameters>
+                    <x:Type TypeName="DataTransferObjects:AutoKlasse"/>
+                </ObjectDataProvider.MethodParameters>
+            </ObjectDataProvider>
+        </ResourceDictionary>
+    </Window.Resources>
+
+
+
+    <Grid>
+        <!-- Vorlesung 02 S.49++ Dialogfenster -->
+
+
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="296*"/>
+                <ColumnDefinition Width="99*"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Margin="16" Grid.ColumnSpan="2">
+                <Label>Marke:</Label>
+                <TextBox Text="{Binding Marke}"></TextBox>
+
+
+                <Label>Klasse:</Label>
+                <ComboBox Text="{Binding Klasse}" ItemsSource="{Binding Source={StaticResource Klassen}}" SelectedIndex="0">
+                </ComboBox>
+
+                <Label>Tagestarif:</Label>
+                <TextBox Text="{Binding Tagestarif}"></TextBox>
+
+                <Label>Basistarif:</Label>
+                <TextBox Text="{Binding Basistarif}"></TextBox>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="50px"/>
+                        <RowDefinition Height="50px"/>
+                    </Grid.RowDefinitions>
+
+                    <Button Command="{Binding ConfirmEditAutoCommand}" Content="Bestätigen" Style="{StaticResource DefaultButtonStyle}" Grid.Row="0"/>
+                    <Button Command="{Binding DiscardButtonCommand}" Content="Abbrechen" Style="{StaticResource DefaultButtonStyle}" Grid.Row="1"/>
+
+                </Grid>
+            </StackPanel>
+
+
+        </Grid>
+    </Grid>
+</Window>

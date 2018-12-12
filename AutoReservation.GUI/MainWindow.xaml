@@ -3,16 +3,12 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:AutoReservation.GUI"
-        xmlns:Views="clr-namespace:AutoReservation.GUI.Views"
         xmlns:local1="clr-namespace:AutoReservation.GUI.ViewModels"
+        xmlns:local11="clr-namespace:KundeReservation.GUI.ViewModels"
+        xmlns:local12="clr-namespace:ReservationReservation.GUI.ViewModels"
         mc:Ignorable="d"
-        Title="Auto Reservation System" Height="700" Width="900">
-        <!-- TODO: Minimal Window Size 
-    
-    
-    
-        -->
+        Title="Auto Reservation System" Height="900" Width="1600" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
+
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -37,26 +33,21 @@
 
                     </Grid.RowDefinitions>
 
-                    <DataGrid Style="{StaticResource TableStyle}" ItemsSource="{Binding autos}">
+                    <DataGrid Style="{StaticResource TableStyle}" SelectionMode="Single" 
+                              IsReadOnly="True" AutoGenerateColumns="False" ItemsSource="{Binding Autos}" 
+                              SelectedItem="{Binding SelectedAuto, Mode=TwoWay}">
                         <DataGrid.Columns>
-                            <DataGridTemplateColumn Header="Marke" Width="Auto" >
-                                
-                            </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Header="Klasse" Width="Auto">
-
-                            </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Header="Tagesrate" Width="Auto">
-
-                            </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Header="Basisrate" Width="Auto">
-
-                            </DataGridTemplateColumn>
+                           <!-- <DataGridTextColumn Header="Id" Binding="{Binding Id}" Width="Auto"/> -->
+                            <DataGridTextColumn Header="Marke" Binding="{Binding Marke}" Width="Auto"/>
+                            <DataGridTextColumn Header="Klasse" Binding="{Binding AutoKlasse}" Width="Auto"/>
+                            <DataGridTextColumn Header="Tagestarif" Binding="{Binding Tagestarif}" Width="Auto"/>
+                            <DataGridTextColumn Header="Basistarif" Binding="{Binding Basistarif}" Width="Auto"/>
                         </DataGrid.Columns>
                     </DataGrid>
 
                     
-                    <Button Command="{Binding SaveCommand}" Content="Speichern" Style="{StaticResource DefaultButtonStyle}" Grid.Row="1" Margin="10,34.5,547,35.5"></Button>
-                    <Button Command="{Binding AddCarCommand}" Content="Auto hinzufügen" Style="{StaticResource DefaultButtonStyle}" Grid.Row="1" Margin="277,34.5,280,35.5" Click="Button_Click"></Button>
+                    <Button Command="{Binding AddCarCommand}" Content="Auto hinzufügen" Style="{StaticResource DefaultButtonStyle}" Grid.Row="1" Margin="10,34.5,547,35.5"></Button>
+                    <Button Command="{Binding EditCarCommand}" Content="Auto bearbeiten" Style="{StaticResource DefaultButtonStyle}" Grid.Row="1" Margin="277,34.5,280,35.5"></Button>
                     <Button Command="{Binding RemoveCarCommand}" Content="Entfernen" Style="{StaticResource DefaultButtonStyle}" Grid.Row="1" Margin="547,34.5,10,35.5"></Button>
                 </Grid>
             </TabItem>
@@ -65,6 +56,9 @@
                 
                 
             <TabItem Header="Kunden">
+                <TabItem.DataContext>
+                    <local11:KundeViewModel/>
+                </TabItem.DataContext>
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition></ColumnDefinition>
@@ -75,22 +69,17 @@
 
                     </Grid.RowDefinitions>
 
-                    <DataGrid Style="{StaticResource TableStyle}" ItemsSource="{Binding kunden}">
+                    <DataGrid Style="{StaticResource TableStyle}" 
+                              IsReadOnly="True" AutoGenerateColumns="False" ItemsSource="{Binding Kunden}">
                         <DataGrid.Columns>
-                            <DataGridTemplateColumn Header="Nachname" Width="Auto">
-
-                            </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Header="Vorname" Width="Auto">
-
-                            </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Header="Geburtstag" Width="Auto">
-
-                            </DataGridTemplateColumn>
+                            <DataGridTextColumn Header="Nachname" Binding="{Binding Nachname}" Width="Auto"/>
+                            <DataGridTextColumn Header="Vorname" Binding="{Binding Vorname}" Width="Auto"/>
+                            <DataGridTextColumn Header="Geburtsdatum"  Binding="{Binding Geburtsdatum, StringFormat={}{0:dddd MMMM dd}}" Width="Auto"/>
                         </DataGrid.Columns>
                     </DataGrid>
 
-                    <Button Command="{Binding SaveCommand}" Content="Speichern" Style="{StaticResource DefaultButtonStyle}" Grid.Row="1" Margin="10,34.5,547,35.5"></Button>
-                    <Button Command="{Binding AddKundeCommand}" Content="Kunde hinzufügen" Style="{StaticResource DefaultButtonStyle}" Grid.Row="1" Margin="277,34.5,280,35.5"></Button>
+                    <Button Command="{Binding AddKundeCommand}" Content="Kunde hinzufügen" Style="{StaticResource DefaultButtonStyle}" Grid.Row="1" Margin="10,34.5,547,35.5"></Button>
+                    <Button Command="{Binding EditKundeCommand}" Content="Kunde bearbeiten" Style="{StaticResource DefaultButtonStyle}" Grid.Row="1" Margin="277,34.5,280,35.5"></Button>
                     <Button Command="{Binding RemoveCarCommand}" Content="Entfernen" Style="{StaticResource DefaultButtonStyle}" Grid.Row="1" Margin="547,34.5,10,35.5"></Button>
 
                 </Grid>
@@ -104,6 +93,9 @@
             
             
             <TabItem Header="Reservationen">
+                <TabItem.DataContext>
+                    <local12:ReservationViewModel/>
+                </TabItem.DataContext>
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition></ColumnDefinition>
@@ -114,31 +106,19 @@
 
                     </Grid.RowDefinitions>
 
-                    <DataGrid Style="{StaticResource TableStyle}" ItemsSource="{Binding reservationen}">
+                    <DataGrid Style="{StaticResource TableStyle}" 
+                              IsReadOnly="True" AutoGenerateColumns="False" ItemsSource="{Binding Reservationen}">
                         <DataGrid.Columns>
-                            <DataGridTemplateColumn Header="Reservations Nr. " Width="Auto">
-
-                            </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Header="Von" Width="Auto">
-
-                            </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Header="Bis" Width="Auto">
-
-                            </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Header="Auto" Width="Auto">
-
-                            </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Header="Nachname" Width="Auto">
-
-                            </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Header="Vorname" Width="Auto">
-
-                            </DataGridTemplateColumn>
+                            <DataGridTextColumn Header="Nummer" Binding="{Binding ReservationsNr}" Width="Auto"/>
+                            <DataGridTextColumn Header="Von" Binding="{Binding Von}" Width="Auto"/>
+                            <DataGridTextColumn Header="Bis" Binding="{Binding Bis}" Width="Auto"/>
+                            <DataGridTextColumn Header="Auto" Binding="{Binding Auto}" Width="Auto"/>
+                            <DataGridTextColumn Header="Nachname" Binding="{Binding Vorname}" Width="Auto"/>
+                            <DataGridTextColumn Header="Vorname" Binding="{Binding Nachname}" Width="Auto"/>
                         </DataGrid.Columns>
                     </DataGrid>
 
-                    <Button Command="{Binding SaveCommand}" Content="Speichern" Style="{StaticResource DefaultButtonStyle}" Grid.Row="1" Margin="10,34.5,547,35.5"></Button>
-                    <Button Command="{Binding AddReservationCommand}" Content="Reservation hinzufügen" Style="{StaticResource DefaultButtonStyle}" Grid.Row="1" Margin="277,34.5,280,35.5"></Button>
+                    <Button Command="{Binding AddReservationCommand}" Content="Reservation hinzufügen" Style="{StaticResource DefaultButtonStyle}" Grid.Row="1" Margin="10,34.5,547,35.5"></Button>
                     <Button Command="{Binding RemoveCarCommand}" Content="Entfernen" Style="{StaticResource DefaultButtonStyle}" Grid.Row="1" Margin="547,34.5,10,35.5"></Button>
 
                 </Grid>

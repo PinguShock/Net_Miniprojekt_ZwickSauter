@@ -10,6 +10,8 @@ using AutoReservation.GUI.ViewModels;
 using AutoReservation.Common.DataTransferObjects;
 using AutoReservation.GUI.Factory;
 using AutoReservation.Common.Extensions;
+using System.ServiceModel;
+using AutoReservation.Common.Interfaces;
 
 namespace ReservationReservation.GUI.ViewModels
 {
@@ -17,12 +19,33 @@ namespace ReservationReservation.GUI.ViewModels
         private List<ReservationDto> originalReservationen = new List<ReservationDto>();
         private ObservableCollection<ReservationDto> _Reservationen = new ObservableCollection<ReservationDto>();
 
-        public ReservationViewModel(IServiceFactory factory) : base(factory) { }
+        public RelayCommand AddReservationCommand { get; set; }
+        public RelayCommand RemoveReservationCommand { get; set; }
+
         public ReservationViewModel() : base() {
+            ChannelFactory<IAutoReservationService> channelFactory = new ChannelFactory<IAutoReservationService>("AutoReservationService");
+            IAutoReservationService target = channelFactory.CreateChannel();
+            Reservationen = new ObservableCollection<ReservationDto>(target.Reservationen());
+
+            AddReservationCommand = new RelayCommand(() => this.AddReservation(), () => this.CanAdd);
+            RemoveReservationCommand = new RelayCommand(() => this.RemoveReservation(), () => this.CanRemove);
         }
+
+        public bool CanAdd = true;
+        private void AddReservation() {
+            AddReservationViewModel addReservationVM = new AddReservationViewModel();
+
+        }
+        public bool CanRemove = true;
+        private void RemoveReservation() {
+
+        }
+
+
 
         public ObservableCollection<ReservationDto> Reservationen {
             get { return _Reservationen; }
+            set { _Reservationen = value; }
         }
 
         private ReservationDto _selectedReservation;
@@ -37,6 +60,7 @@ namespace ReservationReservation.GUI.ViewModels
             }
         }
 
+        /*
         #region AddReservation
         private CommandBaseClass _AddReservationCommand;
         public ICommand AddReservationCommand {
@@ -65,7 +89,7 @@ namespace ReservationReservation.GUI.ViewModels
             }
         }
         private void remove() {
-            service.Remove(selectedReservation);
+            service.RemoveReservation(selectedReservation);
             load();
         }
         private bool canRemove() {
@@ -74,7 +98,7 @@ namespace ReservationReservation.GUI.ViewModels
 
         #endregion
 
-        #region Save
+        #region SaveReservation
         private CommandBaseClass _SaveReservationCommand;
         public ICommand SaveReservationCommand {
             get {
@@ -84,11 +108,11 @@ namespace ReservationReservation.GUI.ViewModels
         public void save() {
             foreach (var r in Reservationen) {
                 if (r.ReservationsNr == default(int)) {
-                    service.Create(r);
+                    service.CreateReservation(r);
                 }
                 else {
                     var original = originalReservationen.FirstOrDefault(o => o.ReservationsNr == r.ReservationsNr);
-                    service.Update(r);
+                    service.UpdateReservation(r);
                 }
             }
             load();
@@ -103,7 +127,7 @@ namespace ReservationReservation.GUI.ViewModels
 
         #endregion
 
-        #region Load
+        #region LoadReservation
 
         private CommandBaseClass _LoadReservationsCommand;
         public ICommand LoadReservationsCommand {
@@ -114,15 +138,16 @@ namespace ReservationReservation.GUI.ViewModels
         protected override void load() {
             Reservationen.Clear();
             originalReservationen.Clear();
-            /*foreach (var a in service.GetAllReservationen()) { // TODO: implementieren in ReservationReservationenervice
+            foreach (var a in service.Reservationen()) {
                 Reservationen.Add(a);
                 originalReservationen.Add(a.copy());
-            }*/
+            }
             selectedReservation = Reservationen.FirstOrDefault();
         }
         private bool canLoadReservation() {
             return serviceExist;
         }
         #endregion
+        */
     }
 }
