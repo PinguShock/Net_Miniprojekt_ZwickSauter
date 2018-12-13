@@ -4,8 +4,9 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AutoReservation.GUI.EditWindows"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
-        Title="Edit Kunde" Height="300" Width="400" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Topmost="True">
+        Title="Details" Height="300" Width="400" ResizeMode="NoResize" WindowStyle="ToolWindow" WindowStartupLocation="CenterScreen" >
 
     <Window.Resources>
         <ResourceDictionary>
@@ -14,8 +15,6 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
-
-
 
     <Grid>
         <Grid>
@@ -33,10 +32,7 @@
 
 
                 <Label>Geburtstag:</Label>
-                <DatePicker Text="{Binding Geburtstag}"></DatePicker>
-
-
-
+                <DatePicker SelectedDate="{Binding Geburtsdatum}"></DatePicker>
 
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -47,13 +43,11 @@
                         <RowDefinition Height="50px"/>
                     </Grid.RowDefinitions>
 
-                    <Button x:Name="OkButton" Content="Bestätigen" Style="{StaticResource ResourceKey=DefaultButtonStyle}" Grid.Row="0"/>
-                    <Button x:Name="DiscardButton" Content="Abbrechen" Style="{StaticResource DefaultButtonStyle}" Grid.Row="1"/>
+                    <Button Command="{Binding ConfirmEditKundeCommand}" Content="Bestätigen" Style="{StaticResource DefaultButtonStyle}" Grid.Row="0"/>
+                    <Button Command="{Binding DiscardKundeButtonCommand}" Content="Abbrechen" Style="{StaticResource DefaultButtonStyle}" Grid.Row="1"/>
 
                 </Grid>
             </StackPanel>
-
-
         </Grid>
     </Grid>
 </Window>

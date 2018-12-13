@@ -1,9 +1,4 @@
-﻿using AutoReservation.Common.DataTransferObjects;
-using AutoReservation.Common.Interfaces;
-using AutoReservation.GUI.Views;
-using System;
-using System.Collections.ObjectModel;
-using System.ServiceModel;
+﻿using AutoReservation.GUI.Views;
 
 namespace AutoReservation.GUI.ViewModels {
     public class EditAutoViewModel : ViewModelBase

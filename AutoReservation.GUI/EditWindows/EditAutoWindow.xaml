@@ -9,7 +9,7 @@
         xmlns:DataTransferObjects="clr-namespace:AutoReservation.Common.DataTransferObjects;assembly=AutoReservation.Common" 
         xmlns:local1="clr-namespace:AutoReservation.GUI.ViewModels" 
         
-        Title="EditAutoWindow" Height="350" Width="400" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Topmost="True">
+        Title="Details" Height="350" Width="400" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
 
     <Window.Resources>
         <ResourceDictionary>
@@ -30,10 +30,6 @@
 
 
     <Grid>
-        <!-- Vorlesung 02 S.49++ Dialogfenster -->
-
-
-
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="296*"/>
@@ -64,7 +60,7 @@
                     </Grid.RowDefinitions>
 
                     <Button Command="{Binding ConfirmEditAutoCommand}" Content="Bestätigen" Style="{StaticResource DefaultButtonStyle}" Grid.Row="0"/>
-                    <Button Command="{Binding DiscardButtonCommand}" Content="Abbrechen" Style="{StaticResource DefaultButtonStyle}" Grid.Row="1"/>
+                    <Button Command="{Binding DiscardAutoButtonCommand}" Content="Abbrechen" Style="{StaticResource DefaultButtonStyle}" Grid.Row="1"/>
 
                 </Grid>
             </StackPanel>

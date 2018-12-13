@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using AutoReservation.Common.DataTransferObjects;
 using AutoReservation.Common.Extensions;
 using AutoReservation.Common.Interfaces;
@@ -11,60 +12,30 @@ using AutoReservation.GUI.Factory;
 
 namespace AutoReservation.GUI.ViewModels
 {
-    public abstract class ViewModelBase : IExtendedNotifyPropertyChanged {
-        public event PropertyChangedEventHandler PropertyChanged;
+    public abstract class ViewModelBase {
 
-        protected IAutoReservationService service { get; private set; }
-
-        private string _errorMessage;
-        public string errorMessage {
-            get { return _errorMessage; }
-            set {
-                if (_errorMessage == value) {
-                    return;
-                }
-                _errorMessage = value;
-                this.OnPropertyChanged(p => p.errorMessage);
-            }
-        }
+        public string saveWarningMessage = "Änderungen speichern? \nDies kann nicht rückgängig gemacht werden!";
+        public string saveWarningWindowTitle = "Speichern bestätigen";
+        public string removeWarningMessage = "Eintrag wirklich löschen? \nÄnderungen können nicht rückgängig gemacht werden!";
+        public string removeWarningTitle = "Löschen bestätigen";
 
         protected ViewModelBase() {
         }
 
 
-
-        protected bool validate(IEnumerable<IValidatable> values) {
-            var errorMessage = new StringBuilder();
-            foreach(var v in values) {
-                var error = v.validate();
-                if (!string.IsNullOrEmpty(error)) {
-                    errorMessage.AppendLine(v.ToString());
-                    errorMessage.AppendLine(error);
-                }
-            }
-            _errorMessage = errorMessage.ToString();
-            return string.IsNullOrEmpty(_errorMessage);
+        #region PopWarnings
+        public void showWarningMessage(string warning, string title) {
+            MessageBox.Show(warning, title, MessageBoxButton.OK, MessageBoxImage.Warning);
         }
-
-        protected void OnPropertyChanged(string propertyName) {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        public MessageBoxResult showSecureSaveMessage() {
+            return MessageBox.Show(saveWarningMessage, saveWarningWindowTitle, MessageBoxButton.YesNoCancel, MessageBoxImage.Warning);
         }
-
-        void IExtendedNotifyPropertyChanged.OnPropertyChanged(string propertyName)
-        {
-            if (PropertyChanged == null)
-            {
-                return;
-            }
-            PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+        public bool showSecureDeleteMessage() {
+            MessageBoxResult result = MessageBox.Show(removeWarningMessage, removeWarningTitle, MessageBoxButton.YesNo, MessageBoxImage.Warning);
+            return result == MessageBoxResult.Yes ? true : false;
         }
+        #endregion
 
 
-
-        public bool serviceExist {
-            get { return service != null; }
-        }
-
-        
     }
 }

@@ -1,158 +1,182 @@
-﻿using AutoReservation.Common.DataTransferObjects;
-using AutoReservation.GUI.Factory;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using AutoReservation.Common.Extensions;
-using AutoReservation.GUI.ViewModels;
 using System.ServiceModel;
+using System.Windows;
+using AutoReservation.BusinessLayer.Exceptions;
+using AutoReservation.Common.DataTransferObjects;
 using AutoReservation.Common.Interfaces;
+using AutoReservation.GUI.ViewModels;
 
-namespace KundeReservation.GUI.ViewModels
-{
+namespace KundeReservation.GUI.ViewModels {
     public class KundeViewModel : ViewModelBase {
-        private List<KundeDto> originalKunden = new List<KundeDto>();
-        private ObservableCollection<KundeDto> _Kunden = new ObservableCollection<KundeDto>();
-        
+        private KundeDto Kunde;
+
+        public int Id { get; set; }
+        public string Vorname { get; set; }
+        public string Nachname { get; set; }
+        public DateTime Geburtsdatum { get; set; }
+
         public RelayCommand EditKundeCommand { get; set; }
         public RelayCommand AddKundeCommand { get; set; }
         public RelayCommand RemoveKundeCommand { get; set; }
+        public RelayCommand ConfirmEditKundeCommand { get; set; }
+        public RelayCommand DiscardKundeButtonCommand { get; set; }
+
+        EditKundeViewModel editKundeVM;
+
+        private IAutoReservationService target;
+
+        private bool buttonVisibility = true;
 
         public KundeViewModel() : base() {
             ChannelFactory<IAutoReservationService> channelFactory = new ChannelFactory<IAutoReservationService>("AutoReservationService");
-            IAutoReservationService target = channelFactory.CreateChannel();
+            target = channelFactory.CreateChannel();
             Kunden = new ObservableCollection<KundeDto>(target.Kunden());
 
-            EditKundeCommand = new RelayCommand(() => this.EditKunde(), () => this.CanEdit);
-            AddKundeCommand = new RelayCommand(() => this.AddKunde(), () => this.CanAdd);
-            RemoveKundeCommand = new RelayCommand(() => this.RemoveKunde(), () => this.CanRemove);
+            EditKundeCommand = new RelayCommand(() => this.EditKunde(), () => buttonVisibility);
+            AddKundeCommand = new RelayCommand(() => this.AddKunde(), () => buttonVisibility);
+            RemoveKundeCommand = new RelayCommand(() => this.RemoveKunde(), () => buttonVisibility);
+            ConfirmEditKundeCommand = new RelayCommand(() => this.ConfirmEdit(), () => true);
+            DiscardKundeButtonCommand = new RelayCommand(() => this.Discard(), () => true);
         }
 
-        public bool CanAdd = true;
-        private void AddKunde() {
-            EditKundeViewModel editKundeVM = new EditKundeViewModel();
-        }
-        public bool CanEdit = true;
-        private void EditKunde() {
-            EditKundeViewModel editKundeVM = new EditKundeViewModel();
-        }
-        public bool CanRemove = true;
-        private void RemoveKunde() {
-            
-        }
-
-
+        private ObservableCollection<KundeDto> _Kunden;
         public ObservableCollection<KundeDto> Kunden {
             get { return _Kunden; }
             set { _Kunden = value; }
         }
 
         private KundeDto _selectedKunde;
-        public KundeDto selectedKunde {
+        public KundeDto SelectedKunde {
             get { return _selectedKunde; }
-            set {
-                if (_selectedKunde == value) {
+            set { _selectedKunde = value; }
+        }
+
+        #region CommandMethods
+        private void ConfirmEdit() {
+            if (Id != 0) { // Ask only when a Customer is edited, not if a new Customer is generated.
+                MessageBoxResult result = showSecureSaveMessage();
+                if (result == MessageBoxResult.No) {
+                    editKundeVM.closeWindow();
+                    changeButtonState(true);
                     return;
                 }
-                _selectedKunde = value;
-                this.OnPropertyChanged(p => p.selectedKunde);
-            }
-        }
-
-
-        
-        /*
-        #region AddKunde
-        private CommandBaseClass _AddKundeCommand;
-        public ICommand AddKundeCommand {
-            get {
-                return _AddKundeCommand ?? (_AddKundeCommand = new CommandBaseClass(param => New(), param => CanNew()));
-            }
-        }
-
-        private void New() {
-            Kunden.Add(new KundeDto());
-        }
-
-        private bool CanNew() {
-            return serviceExist;
-        }
-
-
-
-        #endregion
-
-        #region RemoveKunde
-        private CommandBaseClass _RemoveKundeCommand;
-        public ICommand RemoveKundeCommand {
-            get {
-                return _RemoveKundeCommand ?? (_RemoveKundeCommand = new CommandBaseClass(param => remove(), param => canRemove()));
-            }
-        }
-        private void remove() {
-            service.RemoveKunde(selectedKunde);
-            load();
-        }
-        private bool canRemove() {
-            return serviceExist && selectedKunde != null && selectedKunde.Id != default(int);
-        }
-
-        #endregion
-
-        #region SaveKunde
-        private CommandBaseClass _SaveKundeCommand;
-        public ICommand SaveKundeCommand {
-            get {
-                return _SaveKundeCommand ?? (_SaveKundeCommand = new CommandBaseClass(param => save(), param => canSave()));
-            }
-        }
-        public void save() {
-            foreach (var k in Kunden) {
-                if (k.Id == default(int)) {
-                    service.CreateKunde(k);
-                }
-                else {
-                    var original = originalKunden.FirstOrDefault(o => o.Id == k.Id);
-                    service.UpdateKunde(k);
+                else if (result == MessageBoxResult.Cancel) {
+                    return;
                 }
             }
-            load();
-        }
-
-        private bool canSave() {
-            if (!serviceExist) {
-                return false;
+            if (Vorname == "" || Nachname == "" || Geburtsdatum > DateTime.Now) {
+                showWarningMessage( "Alle Felder müssen korrekt ausgefüllt werden!" +
+                                    "\nVor- und Nachname sowie Geburtstdatum benötigt." +
+                                    "\nGeburtsdatum muss in der Vergangenheit liegen.", "Fehler");
+                return;
             }
-            return validate(Kunden);
-        }
 
-        #endregion
+            ChannelFactory<IAutoReservationService> channelFactory = new ChannelFactory<IAutoReservationService>("AutoReservationService");
+            target = channelFactory.CreateChannel();
 
-        #region LoadKunde
-
-        private CommandBaseClass _LoadKundeCommand;
-        public ICommand LoadKundeCommand {
-            get {
-                return _LoadKundeCommand ?? (_LoadKundeCommand = new CommandBaseClass(param => load(), param => canLoadKunde()));
+            if (Id == 0) { // New Kunde
+                Kunde = new KundeDto {
+                    Vorname = Vorname,
+                    Nachname = Nachname,
+                    Geburtsdatum = Geburtsdatum
+                };
+                Kunden.Add(Kunde);
+                target.CreateKunde(Kunde);
+            } else {    // Edit Kunde
+                Kunde = target.GetKundeById(this.Id);
+                Kunde.Vorname = Vorname;
+                Kunde.Nachname = Nachname;
+                Kunde.Geburtsdatum = Geburtsdatum;
+                Kunden.Add(Kunde);
+                try {
+                    target.UpdateKunde(Kunde);
+                }
+                catch (OptimisticConcurrencyException<KundeDto>) {
+                    showWarningMessage("Update fehlgeschlagen!\nOptimistic Concurrency Exception.", "Update Fehlgeschlagen");
+                }
             }
-        }
-        protected override void load() {
+
             Kunden.Clear();
-            originalKunden.Clear();
-            foreach (var a in service.Kunden()) { // TODO: implementieren in KundeReservationService
+            foreach (var a in target.Kunden()) {
                 Kunden.Add(a);
-                originalKunden.Add(a.copy());
             }
-            selectedKunde = Kunden.FirstOrDefault();
+            SelectedKunde = Kunden.FirstOrDefault();
+
+            resetKunde();
+            editKundeVM.closeWindow();
+            changeButtonState(true);
         }
-        private bool canLoadKunde() {
-            return serviceExist;
+
+
+        private void Discard() {
+            editKundeVM.closeWindow();
+            changeButtonState(true);
+        }
+
+        private void EditKunde() {
+            changeButtonState(false);
+            try {
+                setKunde(SelectedKunde); // Fill the editWindow with the Selected Kunde
+                editKundeVM = new EditKundeViewModel();
+                editKundeVM.setContext(this);
+                Id = SelectedKunde.Id;
+                return;
+            }
+            catch (NullReferenceException) {
+                showWarningMessage("Kein Kunde ausgewählt!", "Fehler");
+            }
+            catch (Exception e) {
+                Console.WriteLine("Exception catched in KundeViewModel:" + e.ToString());
+            }
+            changeButtonState(true);
+        }
+
+        private void AddKunde() {
+            changeButtonState(false);
+            resetKunde();
+            editKundeVM = new EditKundeViewModel();
+            editKundeVM.setContext(this);
+        }
+
+        private void RemoveKunde() {
+            if (SelectedKunde == null) {
+                showWarningMessage("Kein Kunde ausgewählt!", "Fehler");
+                return;
+            }
+            if (showSecureDeleteMessage()) {
+                ChannelFactory<IAutoReservationService> channelFactory = new ChannelFactory<IAutoReservationService>("AutoReservationService");
+                target = channelFactory.CreateChannel();
+
+                target.RemoveKunde(SelectedKunde);
+                Kunden.Remove(SelectedKunde);
+            }
         }
         #endregion
-        */
+
+        #region HelperMethods
+
+        private void setKunde(KundeDto Kunde) {
+            Id = Kunde.Id;
+            Vorname = Kunde.Vorname;
+            Nachname = Kunde.Nachname;
+            Geburtsdatum = Kunde.Geburtsdatum;
+        }
+
+        private void resetKunde() {
+            Id = 0;
+            Vorname = "";
+            Nachname = "";
+            Geburtsdatum = DateTime.Now;
+        }
+
+        private void changeButtonState(bool state) {
+            buttonVisibility = state;
+            AddKundeCommand.RaiseCanExecuteChanged();
+            EditKundeCommand.RaiseCanExecuteChanged();
+            RemoveKundeCommand.RaiseCanExecuteChanged();
+        }
+        #endregion
     }
 }

@@ -1,18 +1,22 @@
 ﻿using AutoReservation.GUI.EditWindows;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using KundeReservation.GUI.ViewModels;
 
-namespace AutoReservation.GUI.ViewModels
-{
+namespace AutoReservation.GUI.ViewModels {
     class EditKundeViewModel
     {
-        public EditKundeViewModel() {
-            EditKundeWindow editWindow = new EditKundeWindow();
-            editWindow.DataContext = this;
+        private EditKundeWindow editWindow;
+
+        public EditKundeViewModel() : base() {
+            editWindow = new EditKundeWindow();
+        }
+
+        public void setContext(KundeViewModel context) {
+            editWindow.DataContext = context;
             editWindow.Show();
+        }
+
+        public void closeWindow() {
+            editWindow.Close();
         }
     }
 }
