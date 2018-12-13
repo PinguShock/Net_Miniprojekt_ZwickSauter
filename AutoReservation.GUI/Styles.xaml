@@ -2,40 +2,56 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:fa="http://schemas.fontawesome.io/icons/">
 
+
+    <Color x:Key="GridBackground">#ffffff</Color>
+    <Color x:Key="DataGridRowBackground">#f2f2f2</Color>
+    <Color x:Key="DataGridBackground">#f2f2f2</Color>
+    <Color x:Key="ButtonBackground">#f2f2f2</Color>
+
+    <SolidColorBrush x:Key="GridBackgroundBrush" Color="{StaticResource GridBackground}" />
+    <SolidColorBrush x:Key="DataGridBackgroundBrush" Color="{StaticResource DataGridBackground}" />
+    <SolidColorBrush x:Key="ButtonBackgroundBrush" Color="{StaticResource ButtonBackground}" />
+    <SolidColorBrush x:Key="DataGridRowBackgroundBrush" Color="{StaticResource DataGridRowBackground}"/>
+
     <Style x:Key="DefaultButtonStyle" TargetType="Button">
-        <Setter Property="Background" Value="White" />
+        <Setter Property="Background" Value="{StaticResource ButtonBackgroundBrush}" />
         <Setter Property="Margin" Value="2" />
         <Setter Property="Padding" Value="10 2 10 2" />
         <Setter Property="FontFamily" Value="Arial" />
-        <Setter Property="FontSize" Value="15px"/>
-        <Setter Property="Width" Value="200px"/>
-        <Setter Property="Height" Value="30px"/>
+        <Setter Property="FontSize" Value="20px"/>
+        <Setter Property="Width" Value="250px"/>
+        <Setter Property="Height" Value="40px"/>
+    </Style>
+
+    <Style x:Key="ColumnHeaderStyle" TargetType="DataGridColumnHeader">
+        <Setter Property="FontSize" Value="15" />
+    </Style>
+    <Style x:Key="DataGridRowStyle" TargetType="DataGridRow">
+        <Setter Property="Background" Value="{StaticResource DataGridRowBackgroundBrush}" />
     </Style>
 
     <Style x:Key="DataGridStyle" TargetType="DataGrid">
-        <Setter Property="Background" Value="LightGray"/>
+        <Setter Property="Background" Value="{StaticResource DataGridBackgroundBrush}"/>
         <Setter Property="Foreground" Value="Black" />
         <Setter Property="FontSize" Value="15px"/>
         <Setter Property="FontFamily" Value="Arial" />
         <Setter Property="FontStyle" Value="Normal" />
         <Setter Property="Width" Value="Auto"/>
         <Setter Property="Height" Value="Auto"/>
+        <Setter Property="Margin" Value="10, 15, 10, 0"/>
+        <Setter Property="MinColumnWidth" Value="200" />
+        <Setter Property="ColumnHeaderStyle" Value="{StaticResource ColumnHeaderStyle}" />
+        <Setter Property="RowStyle" Value="{StaticResource DataGridRowStyle}" />
     </Style>
     
-    <Style x:Key="DefaultLabelStyle" TargetType="Label">
-        <Setter Property="Background" Value="White" />
-        <Setter Property="Margin" Value="2" />
-        <Setter Property="Padding" Value="10 2 10 2" />
-        <Setter Property="FontFamily" Value="Arial" />
-        <Setter Property="FontSize" Value="15px"/>
-        <Setter Property="Width" Value="200px"/>
-        <Setter Property="Height" Value="30px"/>
-        <Setter Property="HorizontalContentAlignment" Value="Center"/>
-        <Setter Property="VerticalContentAlignment" Value="Center"/>
+    <Style x:Key="TabItemStyle" TargetType="TabItem">
+        <Setter Property="FontSize" Value="20"/>
+        <Setter Property="Height" Value="30"/>
+        <Setter Property="Width" Value="280" />
     </Style>
 
     <Style x:Key="DefaultGridStyle" TargetType="Grid">
-        <Setter Property="Background" Value="White"/>
+        <Setter Property="Background" Value="{StaticResource GridBackgroundBrush}"/>
     </Style>
 
 </ResourceDictionary>

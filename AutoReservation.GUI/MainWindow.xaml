@@ -19,7 +19,7 @@
 
     <Grid Style="{StaticResource DefaultGridStyle}">
         <TabControl>
-            <TabItem Header="Autos" Width="280">
+            <TabItem Header="Autos" Style="{StaticResource TabItemStyle}">
                 <TabItem.DataContext>
                     <local1:AutoViewModel/>
                 </TabItem.DataContext>
@@ -52,7 +52,7 @@
                 </Grid>
             </TabItem>
 
-            <TabItem Header="Kunden" Width="280">
+            <TabItem Header="Kunden" Style="{StaticResource TabItemStyle}">
                 <TabItem.DataContext>
                     <local11:KundeViewModel/>
                 </TabItem.DataContext>
@@ -83,7 +83,7 @@
                 </Grid>
             </TabItem>
 
-            <TabItem Header="Reservationen" Width="280">
+            <TabItem Header="Reservationen" Style="{StaticResource TabItemStyle}">
                 <TabItem.DataContext>
                     <local12:ReservationViewModel/>
                 </TabItem.DataContext>
@@ -101,18 +101,19 @@
                               IsReadOnly="True" AutoGenerateColumns="False" ItemsSource="{Binding Reservationen}" 
                               SelectedItem="{Binding SelectedReservation, Mode=TwoWay}">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="Nummer" Binding="{Binding ReservationsNr}" Width="Auto"/>
-                            <DataGridTextColumn Header="Von" Binding="{Binding Von, StringFormat=\{0:dd.MM.yy\}}" Width="Auto" />
-                            <DataGridTextColumn Header="Bis" Binding="{Binding Bis, StringFormat=\{0:dd.MM.yy\}}" Width="Auto"/>
-                            <DataGridTextColumn Header="Auto" Binding="{Binding Auto.Marke}" Width="Auto"/>
-                            <DataGridTextColumn Header="Vorname" Binding="{Binding Kunde.Vorname}" Width="Auto"/>
-                            <DataGridTextColumn Header="Nachname" Binding="{Binding Kunde.Nachname}" Width="Auto"/>
+                            <DataGridTextColumn Header="Nummer" Binding="{Binding ReservationsNr}" />
+                            <DataGridTextColumn Header="Von" Binding="{Binding Von, StringFormat=\{0:dd.MM.yy\}}" SortDirection="Ascending"/>
+                            <DataGridTextColumn Header="Bis" Binding="{Binding Bis, StringFormat=\{0:dd.MM.yy\}}" />
+                            <DataGridTextColumn Header="Auto" Binding="{Binding Auto.Marke}" />
+                            <DataGridTextColumn Header="Vorname" Binding="{Binding Kunde.Vorname}" />
+                            <DataGridTextColumn Header="Nachname" Binding="{Binding Kunde.Nachname}" />
                         </DataGrid.Columns>
                     </DataGrid>
 
                     <Button Command="{Binding AddReservationCommand}" Content="Reservation hinzufügen" Style="{StaticResource DefaultButtonStyle}" Grid.Row="1" Margin="10,34.5,547,35.5"></Button>
                     <Button Command="{Binding RemoveReservationCommand}" Content="Entfernen" Style="{StaticResource DefaultButtonStyle}" Grid.Row="1" Margin="547,34.5,10,35.5"></Button>
-                    <Label  Content="{Binding LastRefreshedTime}" Style="{StaticResource DefaultLabelStyle}" Margin="278,34.5,326,35.5" Grid.Row="1"/>
+                    <CheckBox Command="{Binding FilterReservationCommand}" Content="Laufende Reservationen anzeigen" IsChecked="True" FontSize="15px" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="278,42.5,282,42.5" Grid.Row="1" />
+
                 </Grid>
             </TabItem>
 

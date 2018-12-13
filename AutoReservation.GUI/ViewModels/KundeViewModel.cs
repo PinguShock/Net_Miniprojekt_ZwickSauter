@@ -3,7 +3,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.ServiceModel;
 using System.Windows;
-using AutoReservation.BusinessLayer.Exceptions;
 using AutoReservation.Common.DataTransferObjects;
 using AutoReservation.Common.DataTransferObjects.Faults;
 using AutoReservation.Common.Interfaces;
@@ -33,6 +32,7 @@ namespace KundeReservation.GUI.ViewModels {
         public KundeViewModel() : base() {
             ChannelFactory<IAutoReservationService> channelFactory = new ChannelFactory<IAutoReservationService>("AutoReservationService");
             target = channelFactory.CreateChannel();
+
             Kunden = new ObservableCollection<KundeDto>(target.Kunden());
 
             EditKundeCommand = new RelayCommand(() => this.EditKunde(), () => buttonVisibility);
@@ -67,7 +67,7 @@ namespace KundeReservation.GUI.ViewModels {
                     return;
                 }
             }
-            if (Vorname == "" || Nachname == "" || Geburtsdatum > DateTime.Now) {
+            if (Vorname == "" || Nachname == "" || Vorname.Length > 20 || Nachname.Length > 20 || Geburtsdatum > DateTime.Now) {
                 showWarningMessage( "Alle Felder müssen korrekt ausgefüllt werden!" +
                                     "\nVor- und Nachname sowie Geburtstdatum benötigt." +
                                     "\nGeburtsdatum muss in der Vergangenheit liegen.", "Fehler");

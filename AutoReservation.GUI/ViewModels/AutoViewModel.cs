@@ -5,9 +5,7 @@ using System.ServiceModel;
 using System;
 using System.Windows;
 using System.Linq;
-using AutoReservation.BusinessLayer.Exceptions;
 using AutoReservation.Common.DataTransferObjects.Faults;
-using System.Collections.Generic;
 
 namespace AutoReservation.GUI.ViewModels {
     public class AutoViewModel : ViewModelBase
@@ -35,6 +33,7 @@ namespace AutoReservation.GUI.ViewModels {
         public AutoViewModel() : base() {
             ChannelFactory<IAutoReservationService> channelFactory = new ChannelFactory<IAutoReservationService>("AutoReservationService");
             target = channelFactory.CreateChannel();
+
             Autos = new ObservableCollection<AutoDto>(target.Autos());
 
             EditAutoCommand = new RelayCommand(() => this.EditAuto(), () => buttonVisibility);
@@ -73,6 +72,9 @@ namespace AutoReservation.GUI.ViewModels {
             }
             if (Marke == "") {
                 showWarningMessage("Automarke muss angegeben werden!", "Fehler");
+                return;
+            } else if (Marke.Length > 20) {
+                showWarningMessage("Automarke zu lang!", "Fehler");
                 return;
             }
 

@@ -1,17 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using AutoReservation.Common.DataTransferObjects;
-using AutoReservation.Common.Extensions;
-using AutoReservation.Common.Interfaces;
-using AutoReservation.GUI.Factory;
+﻿using System.Windows;
 
-namespace AutoReservation.GUI.ViewModels
-{
+namespace AutoReservation.GUI.ViewModels {
     public abstract class ViewModelBase {
 
         public string saveWarningMessage = "Änderungen speichern? \nDies kann nicht rückgängig gemacht werden!";

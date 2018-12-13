@@ -30,32 +30,20 @@ namespace ReservationReservation.GUI.ViewModels {
         public RelayCommand RemoveReservationCommand { get; set; }
         public RelayCommand ConfirmAddReservationCommand { get; set; }
         public RelayCommand DiscardReservationButtonCommand { get; set; }
-
-        private List<string> _AutoNames = new List<string>();
-        public List<string> AutoNames {
-            get { return _AutoNames; }
-            set { _AutoNames = value; }
-        }
-        private List<string> _KundenNames = new List<string>();
-        public List<string> KundeNames {
-            get { return _KundenNames; }
-            set { _KundenNames = value; }
-        }
+        public RelayCommand FilterReservationCommand { get; set; }
 
         AddReservationViewModel editReservationVM;
 
         private IAutoReservationService target;
 
         private bool buttonVisibility = true;
+        private bool isFiltered = true;
 
-        /*
-         * TODO: Autos und Kunden in Reservationsauswahl aktualisieren!!!!
-         * 
-         */
 
         public ReservationViewModel() : base() {
             ChannelFactory<IAutoReservationService> channelFactory = new ChannelFactory<IAutoReservationService>("AutoReservationService");
             target = channelFactory.CreateChannel();
+
             Reservationen = new ObservableCollection<ReservationDto>(target.Reservationen());
 
             generateComboBoxLists();
@@ -64,16 +52,13 @@ namespace ReservationReservation.GUI.ViewModels {
             RemoveReservationCommand = new RelayCommand(() => this.RemoveReservation(), () => buttonVisibility);
             ConfirmAddReservationCommand = new RelayCommand(() => this.ConfirmAdd(), () => true);
             DiscardReservationButtonCommand = new RelayCommand(() => this.Discard(), () => true);
+            FilterReservationCommand = new RelayCommand(() => this.FilterReservations(), () => true);
 
+            RefreshReservationen();
             StartTimer();
         }
 
-        private string lastRefreshedTime = "Last update: ";
-        public string LastRefreshedTime {
-            get { return lastRefreshedTime; }
-            set { lastRefreshedTime = value; }
-        }
-
+        #region Propertys
         private ObservableCollection<ReservationDto> _Reservationen;
         public ObservableCollection<ReservationDto> Reservationen {
             get { return _Reservationen; }
@@ -91,11 +76,24 @@ namespace ReservationReservation.GUI.ViewModels {
             set { _Kunden = value; }
         }
 
+        private List<string> _AutoNames = new List<string>();
+        public List<string> AutoNames {
+            get { return _AutoNames; }
+            set { _AutoNames = value; }
+        }
+
+        private List<string> _KundenNames = new List<string>();
+        public List<string> KundeNames {
+            get { return _KundenNames; }
+            set { _KundenNames = value; }
+        }
+
         private ReservationDto _selectedReservation;
         public ReservationDto SelectedReservation {
             get { return _selectedReservation; }
             set { _selectedReservation = value; }
         }
+        #endregion
 
         #region CommandMethods
         private void ConfirmAdd() {
@@ -108,7 +106,6 @@ namespace ReservationReservation.GUI.ViewModels {
             ChannelFactory<IAutoReservationService> channelFactory = new ChannelFactory<IAutoReservationService>("AutoReservationService");
             target = channelFactory.CreateChannel();
 
-            
             foreach (var a in Autos) {
                 if (Auto == a.Marke) {
                     auto = a;
@@ -146,13 +143,10 @@ namespace ReservationReservation.GUI.ViewModels {
                 }
             }
 
-            Reservationen.Clear();
-            foreach (var a in target.Reservationen()) {
-                Reservationen.Add(a);
-            }
+            RefreshReservationen();
             SelectedReservation = Reservationen.FirstOrDefault();
 
-            resetReservation();
+            resetBindedValues();
             editReservationVM.closeWindow();
             changeButtonState(true);
         }
@@ -166,7 +160,7 @@ namespace ReservationReservation.GUI.ViewModels {
         private void AddReservation() {
             generateComboBoxLists();
             changeButtonState(false);
-            resetReservation();
+            resetBindedValues();
             editReservationVM = new AddReservationViewModel();
             editReservationVM.setContext(this);
         }
@@ -193,6 +187,15 @@ namespace ReservationReservation.GUI.ViewModels {
                 
             }
         }
+
+        private void FilterReservations() {
+            if (isFiltered) {
+                isFiltered = false;
+            } else {
+                isFiltered = true;
+            }
+            RefreshReservationen();
+        }
         #endregion
 
         #region HelperMethods
@@ -205,7 +208,7 @@ namespace ReservationReservation.GUI.ViewModels {
             kunde = Reservation.Kunde;
         }
 
-        private void resetReservation() {
+        private void resetBindedValues() {
             ReservationsNr = 0;
             Von = DateTime.Now;
             Bis = DateTime.Now;
@@ -220,8 +223,6 @@ namespace ReservationReservation.GUI.ViewModels {
         }
 
         private void generateComboBoxLists() {
-            //Autos.Clear();
-            //Kunden.Clear();
             AutoNames.Clear();
             KundeNames.Clear();
 
@@ -235,16 +236,27 @@ namespace ReservationReservation.GUI.ViewModels {
             }
         }
 
-        private void StartTimer() {
-            Timer = new DispatcherTimer();
-            Timer.Interval = TimeSpan.FromSeconds(10);
-            Timer.Tick += (sender, args) => {
+        private void RefreshReservationen() {
+            if (!isFiltered) {
                 Reservationen.Clear();
                 foreach (var a in target.Reservationen()) {
                     Reservationen.Add(a);
                 }
-                LastRefreshedTime = "Last update: " + DateTime.Now.ToLocalTime().ToString();
-                Console.WriteLine("Refreshed!");
+            } else {
+                Reservationen.Clear();
+                foreach (var a in target.Reservationen()) {
+                    if (a.Von < DateTime.Now && a.Bis > DateTime.Now) {
+                        Reservationen.Add(a);
+                    }
+                }
+            }
+        }
+
+        private void StartTimer() {
+            Timer = new DispatcherTimer();
+            Timer.Interval = TimeSpan.FromSeconds(10);
+            Timer.Tick += (sender, args) => {
+                RefreshReservationen();
             };
             Timer.Start();
         }
