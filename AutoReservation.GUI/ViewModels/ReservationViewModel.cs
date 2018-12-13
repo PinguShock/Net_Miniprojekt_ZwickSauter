@@ -48,6 +48,11 @@ namespace ReservationReservation.GUI.ViewModels {
 
         private bool buttonVisibility = true;
 
+        /*
+         * TODO: Autos und Kunden in Reservationsauswahl aktualisieren!!!!
+         * 
+         */
+
         public ReservationViewModel() : base() {
             ChannelFactory<IAutoReservationService> channelFactory = new ChannelFactory<IAutoReservationService>("AutoReservationService");
             target = channelFactory.CreateChannel();
@@ -159,6 +164,7 @@ namespace ReservationReservation.GUI.ViewModels {
         }
 
         private void AddReservation() {
+            generateComboBoxLists();
             changeButtonState(false);
             resetReservation();
             editReservationVM = new AddReservationViewModel();
@@ -174,8 +180,17 @@ namespace ReservationReservation.GUI.ViewModels {
                 ChannelFactory<IAutoReservationService> channelFactory = new ChannelFactory<IAutoReservationService>("AutoReservationService");
                 target = channelFactory.CreateChannel();
 
-                target.RemoveReservation(SelectedReservation);
-                Reservationen.Remove(SelectedReservation);
+                try {
+                    target.RemoveReservation(SelectedReservation);
+                    Reservationen.Remove(SelectedReservation);
+                } catch (FaultException f) {
+                    showWarningMessage("Fault: " + f.ToString(), "Fault");
+                    return;
+                } catch (Exception e) {
+                    showWarningMessage("Exception: " + e.ToString(), "Exception");
+                    return;
+                }
+                
             }
         }
         #endregion
@@ -205,6 +220,11 @@ namespace ReservationReservation.GUI.ViewModels {
         }
 
         private void generateComboBoxLists() {
+            //Autos.Clear();
+            //Kunden.Clear();
+            AutoNames.Clear();
+            KundeNames.Clear();
+
             Autos = new ObservableCollection<AutoDto>(target.Autos());
             Kunden = new ObservableCollection<KundeDto>(target.Kunden());
             foreach (var a in Autos) {
@@ -217,7 +237,7 @@ namespace ReservationReservation.GUI.ViewModels {
 
         private void StartTimer() {
             Timer = new DispatcherTimer();
-            Timer.Interval = TimeSpan.FromSeconds(5);
+            Timer.Interval = TimeSpan.FromSeconds(10);
             Timer.Tick += (sender, args) => {
                 Reservationen.Clear();
                 foreach (var a in target.Reservationen()) {

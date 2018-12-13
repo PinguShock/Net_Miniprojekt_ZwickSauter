@@ -17,13 +17,13 @@
         </ResourceDictionary>
     </Window.Resources>
 
-    <Grid>
+    <Grid Style="{StaticResource DefaultGridStyle}">
         <TabControl>
             <TabItem Header="Autos" Width="280">
                 <TabItem.DataContext>
                     <local1:AutoViewModel/>
                 </TabItem.DataContext>
-                <Grid>
+                <Grid Style="{StaticResource DefaultGridStyle}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition></ColumnDefinition>
                     </Grid.ColumnDefinitions>
@@ -33,7 +33,7 @@
 
                     </Grid.RowDefinitions>
 
-                    <DataGrid Style="{StaticResource TableStyle}" SelectionMode="Single" 
+                    <DataGrid Style="{StaticResource DataGridStyle}" SelectionMode="Single" 
                               IsReadOnly="True" AutoGenerateColumns="False" ItemsSource="{Binding Autos}" 
                               SelectedItem="{Binding SelectedAuto, Mode=TwoWay}">
                         <DataGrid.Columns>
@@ -56,7 +56,7 @@
                 <TabItem.DataContext>
                     <local11:KundeViewModel/>
                 </TabItem.DataContext>
-                <Grid>
+                <Grid Style="{StaticResource DefaultGridStyle}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition></ColumnDefinition>
                     </Grid.ColumnDefinitions>
@@ -66,7 +66,7 @@
 
                     </Grid.RowDefinitions>
 
-                    <DataGrid SelectionMode="Single" 
+                    <DataGrid SelectionMode="Single"  Style="{StaticResource DataGridStyle}"
                               IsReadOnly="True" AutoGenerateColumns="False" ItemsSource="{Binding Kunden}" 
                               SelectedItem="{Binding SelectedKunde, Mode=TwoWay}">
                         <DataGrid.Columns>
@@ -87,7 +87,7 @@
                 <TabItem.DataContext>
                     <local12:ReservationViewModel/>
                 </TabItem.DataContext>
-                <Grid>
+                <Grid Style="{StaticResource DefaultGridStyle}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition></ColumnDefinition>
                     </Grid.ColumnDefinitions>
@@ -97,13 +97,13 @@
 
                     </Grid.RowDefinitions>
 
-                    <DataGrid SelectionMode="Single" 
+                    <DataGrid SelectionMode="Single" Style="{StaticResource DataGridStyle}"
                               IsReadOnly="True" AutoGenerateColumns="False" ItemsSource="{Binding Reservationen}" 
                               SelectedItem="{Binding SelectedReservation, Mode=TwoWay}">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Nummer" Binding="{Binding ReservationsNr}" Width="Auto"/>
-                            <DataGridTextColumn Header="Von" Binding="{Binding Von}" Width="Auto"/>
-                            <DataGridTextColumn Header="Bis" Binding="{Binding Bis}" Width="Auto"/>
+                            <DataGridTextColumn Header="Von" Binding="{Binding Von, StringFormat=\{0:dd.MM.yy\}}" Width="Auto" />
+                            <DataGridTextColumn Header="Bis" Binding="{Binding Bis, StringFormat=\{0:dd.MM.yy\}}" Width="Auto"/>
                             <DataGridTextColumn Header="Auto" Binding="{Binding Auto.Marke}" Width="Auto"/>
                             <DataGridTextColumn Header="Vorname" Binding="{Binding Kunde.Vorname}" Width="Auto"/>
                             <DataGridTextColumn Header="Nachname" Binding="{Binding Kunde.Nachname}" Width="Auto"/>

@@ -5,6 +5,7 @@ using System.ServiceModel;
 using System.Windows;
 using AutoReservation.BusinessLayer.Exceptions;
 using AutoReservation.Common.DataTransferObjects;
+using AutoReservation.Common.DataTransferObjects.Faults;
 using AutoReservation.Common.Interfaces;
 using AutoReservation.GUI.ViewModels;
 
@@ -85,16 +86,23 @@ namespace KundeReservation.GUI.ViewModels {
                 Kunden.Add(Kunde);
                 target.CreateKunde(Kunde);
             } else {    // Edit Kunde
-                Kunde = target.GetKundeById(this.Id);
+                foreach (var k in Kunden) {
+                    if (k.Id == Id) {
+                        Kunde = k;
+                    }
+                }
                 Kunde.Vorname = Vorname;
                 Kunde.Nachname = Nachname;
                 Kunde.Geburtsdatum = Geburtsdatum;
                 Kunden.Add(Kunde);
                 try {
                     target.UpdateKunde(Kunde);
-                }
-                catch (OptimisticConcurrencyException<KundeDto>) {
-                    showWarningMessage("Update fehlgeschlagen!\nOptimistic Concurrency Exception.", "Update Fehlgeschlagen");
+                } catch (FaultException<OptimisticConcurrencyFault>) {
+                    showWarningMessage("Update fehlgeschlagen!", "Fault");
+                } catch (FaultException f) {
+                    showWarningMessage("Fehler: \n" + f.ToString(), "Fault");
+                } catch (Exception e) {
+                    showWarningMessage("Exception: \n" + e.ToString(), "Exception");
                 }
             }
 
@@ -126,9 +134,10 @@ namespace KundeReservation.GUI.ViewModels {
             }
             catch (NullReferenceException) {
                 showWarningMessage("Kein Kunde ausgewählt!", "Fehler");
-            }
-            catch (Exception e) {
-                Console.WriteLine("Exception catched in KundeViewModel:" + e.ToString());
+            } catch (FaultException f) {
+                showWarningMessage("Fehler: \n" + f.ToString(), "Fault");
+            } catch (Exception e) {
+                showWarningMessage("Exception: \n" + e.ToString(), "Exception");
             }
             changeButtonState(true);
         }
@@ -148,10 +157,16 @@ namespace KundeReservation.GUI.ViewModels {
             if (showSecureDeleteMessage()) {
                 ChannelFactory<IAutoReservationService> channelFactory = new ChannelFactory<IAutoReservationService>("AutoReservationService");
                 target = channelFactory.CreateChannel();
-
-                target.RemoveKunde(SelectedKunde);
-                Kunden.Remove(SelectedKunde);
-            }
+                try { 
+                    target.RemoveKunde(SelectedKunde);
+                    Kunden.Remove(SelectedKunde);
+                } catch (FaultException f) {
+                    showWarningMessage("Fehler: \n" + f.ToString(), "Fault");
+                }
+                catch (Exception e) {
+                    showWarningMessage("Exception: \n" + e.ToString(), "Exception");
+                }
+        }
         }
         #endregion
 

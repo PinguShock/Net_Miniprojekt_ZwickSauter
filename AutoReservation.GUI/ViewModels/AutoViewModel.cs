@@ -6,6 +6,8 @@ using System;
 using System.Windows;
 using System.Linq;
 using AutoReservation.BusinessLayer.Exceptions;
+using AutoReservation.Common.DataTransferObjects.Faults;
+using System.Collections.Generic;
 
 namespace AutoReservation.GUI.ViewModels {
     public class AutoViewModel : ViewModelBase
@@ -85,10 +87,21 @@ namespace AutoReservation.GUI.ViewModels {
                     AutoKlasse = Klasse
                 };
                 Autos.Add(auto);
-                target.CreateAuto(auto);
+                try {
+                    target.CreateAuto(auto);
+                } catch (FaultException f) {
+                    showWarningMessage("Fehler: \n" + f.ToString(), "Fault");
+                } catch (Exception e) {
+                    showWarningMessage("Exception: \n" + e.ToString(), "Exception");
+                }
+
 
             } else {    // Edit Auto
-                auto = target.GetAutoById(this.Id);
+                foreach (var a in Autos) {
+                    if (a.Id == Id) {
+                        auto = a;
+                    }
+                }
                 auto.Marke = Marke;
                 auto.Tagestarif = Tagestarif;
                 auto.Basistarif = Basistarif;
@@ -96,8 +109,12 @@ namespace AutoReservation.GUI.ViewModels {
                 Autos.Add(auto);
                 try {
                     target.UpdateAuto(auto);
-                } catch (OptimisticConcurrencyException<AutoDto>) {
-                    showWarningMessage("Update fehlgeschlagen!\nOptimistic Concurrency Exception.", "Update Fehlgeschlagen");
+                } catch (FaultException<OptimisticConcurrencyFault>) {
+                    showWarningMessage("Update fehlgeschlagen!", "Fault");
+                } catch (FaultException f) {
+                    showWarningMessage("Fehler: \n" + f.ToString(), "Fault");
+                } catch (Exception e) {
+                    showWarningMessage("Exception: \n" + e.ToString(), "Exception");
                 }
             }
 
@@ -129,9 +146,10 @@ namespace AutoReservation.GUI.ViewModels {
             }
             catch (NullReferenceException) {
                 showWarningMessage("Kein Auto ausgewählt!", "Fehler");
-            }
-            catch (Exception e) {
-                Console.WriteLine("Exception catched in AutoViewModel:" + e.ToString());
+            } catch (FaultException f) {
+                showWarningMessage("Fehler: \n" + f.ToString(), "Fault");
+            } catch (Exception e) {
+                showWarningMessage("Exception: \n" + e.ToString(), "Exception");
             }
             changeButtonState(true);
         }
@@ -152,8 +170,14 @@ namespace AutoReservation.GUI.ViewModels {
                 ChannelFactory<IAutoReservationService> channelFactory = new ChannelFactory<IAutoReservationService>("AutoReservationService");
                 target = channelFactory.CreateChannel();
 
-                target.RemoveAuto(SelectedAuto);
-                Autos.Remove(SelectedAuto);
+                try {
+                    target.RemoveAuto(SelectedAuto);
+                    Autos.Remove(SelectedAuto);
+                } catch (FaultException f) {
+                    showWarningMessage("Fehler: \n" + f.ToString(), "Fault");
+                } catch (Exception e) {
+                    showWarningMessage("Exception: \n" + e.ToString(), "Exception");
+                }
             }
         }
         #endregion
