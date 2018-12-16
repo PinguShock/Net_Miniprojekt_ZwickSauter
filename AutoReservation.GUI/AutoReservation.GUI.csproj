@@ -85,7 +85,6 @@
     <Compile Include="ViewModels\EditAutoViewModel.cs" />
     <Compile Include="ViewModels\EditKundeViewModel.cs" />
     <Compile Include="ViewModels\KundeViewModel.cs" />
-    <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="ViewModels\RelayCommand.cs" />
     <Compile Include="ViewModels\ReservationViewModel.cs" />
     <Compile Include="ViewModels\ViewModelBase.cs" />

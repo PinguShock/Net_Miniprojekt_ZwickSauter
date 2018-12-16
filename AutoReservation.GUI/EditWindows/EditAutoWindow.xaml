@@ -41,14 +41,25 @@
 
 
                 <Label>Klasse:</Label>
-                <ComboBox Text="{Binding Klasse}" ItemsSource="{Binding Source={StaticResource Klassen}}" SelectedIndex="0">
+                <ComboBox x:Name="CarClassSelection" Text="{Binding Klasse}" ItemsSource="{Binding Source={StaticResource Klassen}}" IsEnabled="{Binding classChangeVisibility}" SelectedIndex="0">
                 </ComboBox>
 
                 <Label>Tagestarif:</Label>
                 <TextBox Text="{Binding Tagestarif}"></TextBox>
 
                 <Label>Basistarif:</Label>
-                <TextBox Text="{Binding Basistarif}"></TextBox>
+                <TextBox Text="{Binding Basistarif}" >
+                    <TextBox.Style>
+                        <Style TargetType="TextBox">
+                            <Setter Property="IsEnabled" Value="False" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ElementName=CarClassSelection, Path=SelectedIndex}" Value="2">
+                                    <Setter Property="IsEnabled" Value="True" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBox.Style>
+                </TextBox>
 
                 <Grid>
                     <Grid.ColumnDefinitions>

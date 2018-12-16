@@ -29,6 +29,7 @@ namespace AutoReservation.GUI.ViewModels {
         private IAutoReservationService target;
 
         private bool buttonVisibility = true;
+        public bool classChangeVisibility { get; set; }
 
         public AutoViewModel() : base() {
             ChannelFactory<IAutoReservationService> channelFactory = new ChannelFactory<IAutoReservationService>("AutoReservationService");
@@ -58,7 +59,6 @@ namespace AutoReservation.GUI.ViewModels {
 
         #region CommandMethods
         private void ConfirmEdit() {
-            
             if (Id != 0) { // Ask only when a Auto is edited, not if a new Auto is generated.
                 MessageBoxResult result = showSecureSaveMessage();
                 if (result == MessageBoxResult.No) {
@@ -96,14 +96,13 @@ namespace AutoReservation.GUI.ViewModels {
                 } catch (Exception e) {
                     showWarningMessage("Exception: \n" + e.ToString(), "Exception");
                 }
-
-
             } else {    // Edit Auto
                 foreach (var a in Autos) {
                     if (a.Id == Id) {
                         auto = a;
                     }
                 }
+
                 auto.Marke = Marke;
                 auto.Tagestarif = Tagestarif;
                 auto.Basistarif = Basistarif;
@@ -138,6 +137,7 @@ namespace AutoReservation.GUI.ViewModels {
         }
 
         private void EditAuto() {
+            classChangeVisibility = false;
             changeButtonState(false);
             try {
                 setAuto(SelectedAuto); // Fill the editWindow with the Selected Auto
@@ -157,6 +157,7 @@ namespace AutoReservation.GUI.ViewModels {
         }
 
         private void AddAuto() {
+            classChangeVisibility = true;
             changeButtonState(false);
             resetAuto();
             editAutoVM = new EditAutoViewModel();

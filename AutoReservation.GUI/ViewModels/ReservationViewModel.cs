@@ -39,7 +39,6 @@ namespace ReservationReservation.GUI.ViewModels {
         private bool buttonVisibility = true;
         private bool isFiltered = true;
 
-
         public ReservationViewModel() : base() {
             ChannelFactory<IAutoReservationService> channelFactory = new ChannelFactory<IAutoReservationService>("AutoReservationService");
             target = channelFactory.CreateChannel();
@@ -237,6 +236,10 @@ namespace ReservationReservation.GUI.ViewModels {
         }
 
         private void RefreshReservationen() {
+            int tempNr = 0;
+            if (SelectedReservation != null) {
+                tempNr = SelectedReservation.ReservationsNr;
+            }
             if (!isFiltered) {
                 Reservationen.Clear();
                 foreach (var a in target.Reservationen()) {
@@ -248,6 +251,12 @@ namespace ReservationReservation.GUI.ViewModels {
                     if (a.Von < DateTime.Now && a.Bis > DateTime.Now) {
                         Reservationen.Add(a);
                     }
+                }
+            }
+            foreach (var r in Reservationen) {
+                if (r.ReservationsNr == tempNr) {
+                    SelectedReservation = r;
+                    break;
                 }
             }
         }

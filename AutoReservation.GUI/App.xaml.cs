@@ -14,8 +14,8 @@ namespace AutoReservation.GUI {
         }
 
         private void AppOnStartup(object sender, StartupEventArgs e) {
-            //var screen = new SplashScreen("media/SplashScreen5.jpg");
-            //screen.Show(true);
+            var screen = new SplashScreen("media/SplashScreen2.jpg");
+            screen.Show(true);
         }
 
     }
